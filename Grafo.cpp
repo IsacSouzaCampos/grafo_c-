@@ -32,26 +32,49 @@ class Grafo {
     structures::LinkedList<Vertice*> listaVertices;
     void inserirVertice(int data);
     void inserirAresta(Grafo::Vertice* v1, Grafo::Vertice* v2);
+    void deletarVertice(int index);
+    void deletarAresta(int v1, int v2);
     void imprimirListaAdjacentes();
     void imprimirVertices();
     int vertices{0};
     int arestas{0};
+    int ultimo{0};
 };
 
 Grafo::Grafo() {}
 
 void Grafo::inserirVertice(int data) {
-    int index = vertices;
+    int index = ultimo;
     Vertice *v = new Vertice(data, index);
     listaVertices.push_back(v);
     vertices++;
+    ultimo++;
 }
 
 
 void Grafo::inserirAresta(Grafo::Vertice* v1, Grafo::Vertice* v2) {
-    if(listaVertices.empty())
-        throw out_of_range("lista vazia!");
+    if(v1 == NULL || v2 == NULL)
+        throw out_of_range("erro!");
     v1->listaArestas.push_back(v2);
+    arestas++;
+}
+
+void Grafo::deletarVertice(int index) {
+    listaVertices.remove(listaVertices.at(index));
+    vertices--;
+}
+
+void Grafo::deletarAresta(int v1, int v2) {
+    for(int i = 0; i < vertices; i++) {
+        if(listaVertices.at(i)->getIndex() == v1) {
+            for(int j = 0; j < listaVertices.at(i)->listaArestas.size(); j++) {
+                if(listaVertices.at(i)->listaArestas.at(j)->getIndex() == v2) {
+                    listaVertices.at(i)->listaArestas.remove(listaVertices.at(i)->listaArestas.at(j));
+                }
+            }
+        }
+    }
+    arestas--;
 }
 
 void Grafo::imprimirListaAdjacentes() {

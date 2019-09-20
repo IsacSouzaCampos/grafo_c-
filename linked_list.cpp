@@ -25,7 +25,7 @@ class LinkedList {
     //! ...
     void insert_sorted(const T& data);  // inserir em ordem
     //! ...
-    T& at(std::size_t index);  // acessar um elemento na posição index
+    T at(std::size_t index);  // acessar um elemento na posição index
     //! ...
     T pop(std::size_t index);  // retirar da posição
     //! ...
@@ -190,7 +190,7 @@ void LinkedList<T>::insert_sorted(const T& data) {
 }
 
 template<typename T>
-T& LinkedList<T>::at(std::size_t index) {
+T LinkedList<T>::at(std::size_t index) {
     if (index >= size())
         throw std::out_of_range("index invalido");
 
