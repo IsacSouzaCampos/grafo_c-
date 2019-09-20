@@ -8,13 +8,18 @@ using namespace std;
 int main(int argc, char* argv[]) {
     Grafo *gr = new Grafo();
 
-    gr->imprimeVertices();
+    gr->imprimirVertices();
     
     for(int i = 0; i < 10; i++) {
         gr->inserirVertice(i+5);
     }
 
-    gr->imprimeVertices();
+    // gr->imprimirVertices();
+
+    gr->inserirAresta(gr->listaVertices.at(2), gr->listaVertices.at(4));
+    gr->inserirAresta(gr->listaVertices.at(3), gr->listaVertices.at(6));
+
+    gr->imprimirListaAdjacentes();
 
     cout << endl;
 

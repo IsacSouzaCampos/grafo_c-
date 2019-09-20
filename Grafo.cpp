@@ -9,28 +9,31 @@ using namespace std;
 class Grafo {
  private:
     class Vertice {
-        structures::LinkedList<const Vertice*> listaArestas;
-
      public:
-        Vertice(int data) {
-            data_ = data;
-        }
+        structures::LinkedList<Vertice*> listaArestas;
 
-        int getData() const{
-            return data_;
+        Vertice(int data, int index) {
+            data_ = data;
+            index_ = index;
+        }
+        int getData() const{ return data_; }
+        int getIndex() const { return index_; }
+        void imprimirAdjacentes() {
+
         }
 
      private:
         int data_;
+        int index_;
     };
 
  public:
     Grafo();
+    structures::LinkedList<Vertice*> listaVertices;
     void inserirVertice(int data);
-    void inserirAresta(Vertice v1, Vertice v2);
-    void imprimeVertices();
-    void imprimeListaArestas();
-    structures::LinkedList<const Vertice*> listaVertices;
+    void inserirAresta(Grafo::Vertice* v1, Grafo::Vertice* v2);
+    void imprimirListaAdjacentes();
+    void imprimirVertices();
     int vertices{0};
     int arestas{0};
 };
@@ -38,17 +41,32 @@ class Grafo {
 Grafo::Grafo() {}
 
 void Grafo::inserirVertice(int data) {
-    Vertice *v = new Vertice(data);
+    int index = vertices;
+    Vertice *v = new Vertice(data, index);
     listaVertices.push_back(v);
     vertices++;
 }
 
 
-// void Grafo::inserirAresta(Grafo::Vertice v1, Grafo::Vertice v2) {
+void Grafo::inserirAresta(Grafo::Vertice* v1, Grafo::Vertice* v2) {
+    if(listaVertices.empty())
+        throw out_of_range("lista vazia!");
+    v1->listaArestas.push_back(v2);
+}
 
-// }
+void Grafo::imprimirListaAdjacentes() {
+    if(listaVertices.empty())
+        throw out_of_range("lista vazia!");
+    for(int i = 0; i < vertices; i++) {
+        cout << "[v" << i << "]: " << flush;
+        for(int j = 0; j < listaVertices.at(i)->listaArestas.size(); j++) {
+            cout << "[v" << listaVertices.at(i)->listaArestas.at(j)->getIndex() << "] / " << flush;
+        }
+        cout << endl;
+    }
+}
 
-void Grafo::imprimeVertices() {
+void Grafo::imprimirVertices() {
     for(int i = 0; i < vertices; i++) {
         cout << listaVertices.at(i)->getData() << endl;
     }
