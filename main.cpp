@@ -17,8 +17,14 @@ int main(int argc, char* argv[]) {
     // gr->imprimirVertices();
 
     gr->inserirAresta(gr->listaVertices.at(2), gr->listaVertices.at(4));
+    gr->inserirAresta(gr->listaVertices.at(2), gr->listaVertices.at(5));
     gr->inserirAresta(gr->listaVertices.at(3), gr->listaVertices.at(6));
 
+    gr->imprimirListaAdjacentes();
+    cout << endl;
+    gr->deletarVertice(5);
+    gr->deletarAresta(2, 4);
+    gr->deletarAresta(4, 2);
     gr->imprimirListaAdjacentes();
 
     cout << endl;

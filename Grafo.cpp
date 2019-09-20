@@ -56,10 +56,17 @@ void Grafo::inserirAresta(Grafo::Vertice* v1, Grafo::Vertice* v2) {
     if(v1 == NULL || v2 == NULL)
         throw out_of_range("erro!");
     v1->listaArestas.push_back(v2);
+    v2->listaArestas.push_back(v1);
     arestas++;
 }
 
 void Grafo::deletarVertice(int index) {
+    int i = 0;
+    while(i < listaVertices.at(index)->listaArestas.size()) {
+        int j = listaVertices.at(index)->listaArestas.at(i)->getIndex();
+        deletarAresta(j, index);
+        i++;
+    }
     listaVertices.remove(listaVertices.at(index));
     vertices--;
 }
@@ -81,7 +88,7 @@ void Grafo::imprimirListaAdjacentes() {
     if(listaVertices.empty())
         throw out_of_range("lista vazia!");
     for(int i = 0; i < vertices; i++) {
-        cout << "[v" << i << "]: " << flush;
+        cout << "[v" << listaVertices.at(i)->getIndex() << "]: " << flush;
         for(int j = 0; j < listaVertices.at(i)->listaArestas.size(); j++) {
             cout << "[v" << listaVertices.at(i)->listaArestas.at(j)->getIndex() << "] / " << flush;
         }
