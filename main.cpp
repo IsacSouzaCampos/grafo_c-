@@ -1,31 +1,29 @@
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-#include "Grafo.cpp"
+#include "grafo.h"
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
-    Grafo *gr = new Grafo();
+    Grafo gr = Grafo();
 
-    gr->imprimirVertices();
+    gr.imprimirVertices();
     
     for(int i = 0; i < 10; i++) {
-        gr->inserirVertice(i+5);
+        gr.inserirVertice(i+5);
     }
 
     // gr->imprimirVertices();
 
-    gr->inserirAresta(gr->listaVertices.at(2), gr->listaVertices.at(4));
-    gr->inserirAresta(gr->listaVertices.at(2), gr->listaVertices.at(5));
-    gr->inserirAresta(gr->listaVertices.at(3), gr->listaVertices.at(6));
+    gr.inserirAresta(2, 4);
+    gr.inserirAresta(2, 5);
+    gr.inserirAresta(3, 6);
 
-    gr->imprimirListaAdjacentes();
+    gr.imprimirListaAdjacentes();
     cout << endl;
-    gr->deletarVertice(5);
-    gr->deletarAresta(2, 4);
-    gr->deletarAresta(4, 2);
-    gr->imprimirListaAdjacentes();
+    gr.deletarVertice(5);
+    gr.deletarAresta(2, 4);
+    gr.deletarAresta(4, 2);
+    gr.imprimirListaAdjacentes();
 
     cout << endl;
 
