@@ -1,7 +1,9 @@
 #include <iostream>
 #include <limits.h>
-// #include "Grafo.h"
+#include <unordered_map>
 #include "linked_list.cpp"
+#define BRANCO 0
+#define AMARELO 1
 
 using namespace std;
 
@@ -18,9 +20,6 @@ class Grafo {
         }
         int getData() const{ return data_; }
         int getIndex() const { return index_; }
-        void imprimirAdjacentes() {
-
-        }
 
      private:
         int data_;
@@ -36,6 +35,8 @@ class Grafo {
     void deletarAresta(int v1, int v2);
     void imprimirListaAdjacentes();
     void imprimirVertices();
+    void DFS(int data);
+    int existe(int data);
     int vertices{0};
     int arestas{0};
     int ultimo{0};
@@ -102,3 +103,22 @@ void Grafo::imprimirVertices() {
     }
 }
 
+// int Grafo::DFS(int data) {
+//     bool temp = false;
+//     unordered_map<Vertice*, int> hm;
+//     // Vertice *v = listaVertices.at(0);
+//     for(int i = 0; i < vertices; i++)
+//         hm[listaVertices.at(i)] = BRANCO;
+//     for(int i = 0; i < vertices; i++) {
+//         if(cor[i] == BRANCO)
+//             temp = existe(data);
+//     }
+//     return -1;
+// }
+
+// int Grafo::existe(int data) {
+//     bool temp = false;
+
+//     while()
+//     return -1;
+// }
