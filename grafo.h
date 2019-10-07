@@ -8,7 +8,7 @@ class Grafo {
  private:
     class Vertice {
      public:
-        list<Vertice> listaArestas;
+        list<Vertice> listaVizinhos;
 
         Vertice() {}
 

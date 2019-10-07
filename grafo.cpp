@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unordered_map>
 #define BRANCO 0
 #define AMARELO 1
 
@@ -17,12 +18,12 @@ void Grafo::inserirVertice(int data) {
 
 
 bool Grafo::inserirAresta(int v1, int v2) {
-    for(Vertice vi : listaVertices) {
+    for(Vertice& vi : listaVertices) {
         if(vi.getIndex() == v1) {
-            for(Vertice vj : listaVertices) {
+            for(Vertice& vj : listaVertices) {
                 if(vj.getIndex() == v2) {
-                    vi.listaArestas.push_back(vj);
-                    vj.listaArestas.push_back(vi);
+                    vi.listaVizinhos.push_back(vj);
+                    vj.listaVizinhos.push_back(vi);
                     // cout << vi.listaArestas.size() << endl;
                     // cout << vj.listaArestas.size() << endl;
                     arestas++;
@@ -33,6 +34,27 @@ bool Grafo::inserirAresta(int v1, int v2) {
     }
     return false;
 }
+
+
+// bool Grafo::inserirAresta(int v1, int v2) {
+//     for(auto vi = listaVertices.begin(); vi != listaVertices.end(); ++vi) {
+//         if((*vi).getIndex() == v1) {
+//             for(auto vj = listaVertices.begin(); vj != listaVertices.end(); ++vj) {
+//                 if((*vj).getIndex() == v2) {
+//                     (*vi).listaVizinhos.push_back(*vj);
+//                     (*vj).listaVizinhos.push_back(*vi);
+//                     cout << (*vi).listaVizinhos.size() << endl;
+//                     cout << (*vj).listaVizinhos.size() << endl;
+//                     arestas++;
+//                     return true;
+//                 }
+//             }
+//         }
+//     }
+//     return false;
+// }
+
+
 
 bool Grafo::deletarVertice(int index) {
     for(Vertice v : listaVertices){
@@ -48,10 +70,10 @@ bool Grafo::deletarVertice(int index) {
 bool Grafo::deletarAresta(int v1, int v2) {
     for(Vertice vi : listaVertices) {
         if(vi.getIndex() == v1) {
-            for(Vertice vj : vi.listaArestas) {
+            for(Vertice vj : vi.listaVizinhos) {
                 if(vj.getIndex() == v2) {
-                    vi.listaArestas.remove(vj);
-                    vj.listaArestas.remove(vi);
+                    vi.listaVizinhos.remove(vj);
+                    vj.listaVizinhos.remove(vi);
                     arestas--;
                     return true;
                 }
@@ -66,8 +88,8 @@ void Grafo::imprimirListaAdjacentes() {
         throw out_of_range("lista vazia!");
     for(Vertice vi : listaVertices) {
         cout << "[v" << vi.getIndex() << "]: " << flush;
-        // cout << vi.listaArestas.size() << endl;
-        for(Vertice vj : vi.listaArestas) {
+        // cout << vi.listaVizinhos.size() << endl;
+        for(Vertice vj : vi.listaVizinhos) {
             cout << "[v" << vj.getIndex() << "] / " << flush;
         }
         cout << endl;
