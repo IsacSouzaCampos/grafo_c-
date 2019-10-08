@@ -1,7 +1,8 @@
 #include <iostream>
-#include <unordered_map>
+#include <stack>
 #define BRANCO 0
 #define AMARELO 1
+#define VERMEHO 2
 
 #include "grafo.h"
 
@@ -35,29 +36,8 @@ bool Grafo::inserirAresta(int v1, int v2) {
     return false;
 }
 
-
-// bool Grafo::inserirAresta(int v1, int v2) {
-//     for(auto vi = listaVertices.begin(); vi != listaVertices.end(); ++vi) {
-//         if((*vi).getIndex() == v1) {
-//             for(auto vj = listaVertices.begin(); vj != listaVertices.end(); ++vj) {
-//                 if((*vj).getIndex() == v2) {
-//                     (*vi).listaVizinhos.push_back(*vj);
-//                     (*vj).listaVizinhos.push_back(*vi);
-//                     cout << (*vi).listaVizinhos.size() << endl;
-//                     cout << (*vj).listaVizinhos.size() << endl;
-//                     arestas++;
-//                     return true;
-//                 }
-//             }
-//         }
-//     }
-//     return false;
-// }
-
-
-
 bool Grafo::deletarVertice(int index) {
-    for(Vertice v : listaVertices){
+    for(Vertice& v : listaVertices){
          if(v.getIndex() == index) {
             listaVertices.remove(v);
             vertices--;
@@ -68,7 +48,7 @@ bool Grafo::deletarVertice(int index) {
 }
 
 bool Grafo::deletarAresta(int v1, int v2) {
-    for(Vertice vi : listaVertices) {
+    for(Vertice& vi : listaVertices) {
         if(vi.getIndex() == v1) {
             for(Vertice vj : vi.listaVizinhos) {
                 if(vj.getIndex() == v2) {
@@ -101,18 +81,16 @@ void Grafo::imprimirVertices() {
         cout << v.getData() << endl;
 }
 
-// int Grafo::DFS(int data) {
-//     bool temp = false;
-//     unordered_map<Vertice*, int> hm;
-//     // Vertice *v = listaVertices.at(0);
-//     for(int i = 0; i < vertices; i++)
-//         hm[listaVertices.at(i)] = BRANCO;
-//     for(int i = 0; i < vertices; i++) {
-//         if(cor[i] == BRANCO)
-//             temp = existe(data);
-//     }
-//     return -1;
-// }
+int Grafo::DFS(int data) {
+    bool temp = false;
+    for(Vertice& v : listaVertices)
+        v.setVisited(false);
+    for(Vertice& v : listaVertices) {
+        if(v.isVisited())
+            temp = existe(data);
+    }
+    return -1;
+}
 
 // int Grafo::existe(int data) {
 //     bool temp = false;
