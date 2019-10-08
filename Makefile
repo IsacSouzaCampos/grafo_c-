@@ -8,3 +8,6 @@ main.o: main.cpp
 
 grafo.o: grafo.cpp
 	g++ -g3 -c grafo.cpp
+
+clean:
+	rm *.o

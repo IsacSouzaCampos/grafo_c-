@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stack>
 #define BRANCO 0
 #define AMARELO 1
 #define VERMEHO 2
@@ -7,7 +6,7 @@
 #include "grafo.h"
 
 
-Grafo::Grafo() {}
+Grafo::Grafo() = default;
 
 void Grafo::inserirVertice(int data) {
     int index = ultimo;
@@ -81,20 +80,46 @@ void Grafo::imprimirVertices() {
         cout << v.getData() << endl;
 }
 
-int Grafo::DFS(int data) {
-    bool temp = false;
+int Grafo::DFS() {
+    stack<Vertice> stack;
+    int index = -1;
     for(Vertice& v : listaVertices)
         v.setVisited(false);
-    for(Vertice& v : listaVertices) {
-        if(v.isVisited())
-            temp = existe(data);
+    auto& raiz = *(listaVertices.begin());
+    
+    stack.push(raiz);
+
+    while(!stack.empty()) {
+        auto top = stack.top();
+        stack.pop();
+        // std::cout << top.getData() << std::endl;
+        for(auto& v : top.listaVizinhos) {
+            if(!v.isVisited()) {
+                v.setVisited(true);
+                int temp = top.getAltura() + 1;
+                v.setAltura(temp);
+                cout << v.getAltura() << endl;
+                stack.push(v);
+            }
+        }
+        
     }
-    return -1;
+
+    // for(Vertice& v : listaVertices) {
+    //     if(!(v.isVisited()))
+    //         index = existe(v, sck, data, index);
+    //     if(index > -1)
+    //         break;
+    // }
+    return 1;
 }
 
-// int Grafo::existe(int data) {
-//     bool temp = false;
-
-//     while()
+// int Grafo::existe(Vertice& v, stack<Vertice&>& sck, int data, int index) {
+//     // v.setVisited(true);
+//     // sck.push(v);
+//     // for(Vertice& ver : v.listaVizinhos) {
+//     //     if(ver.getData() == data)
+//     //         return ver.getIndex();
+//     // }
 //     return -1;
 // }

@@ -1,6 +1,7 @@
 #ifndef GRAFO_H
 #define GRAFO_H
-#include <unordered_map>
+// #include <unordered_map>
+#include <stack>
 #include <list>
 
 using namespace std;
@@ -11,7 +12,7 @@ class Grafo {
      public:
         list<Vertice> listaVizinhos;
 
-        Vertice() {}
+        Vertice() = default;
 
         Vertice(int data, int index) {
             data_ = data;
@@ -20,13 +21,24 @@ class Grafo {
         int getData() const { return data_; }
         int getIndex() const { return index_; }
         bool isVisited() const { return visitado_; }
-        bool setVisited(bool visitado) { visitado_ = visitado; }
+        void setVisited(bool visitado) { visitado_ = visitado; }
+        int getAltura() const { return altura_; }
+        void setAltura(int altura) { altura_ = altura; }
 
+
+         bool operator<(const Grafo::Vertice &rhs) const {
+            return getIndex() < rhs.getIndex();
+         }
+
+         bool operator==(const Grafo::Vertice &rhs) const {
+               return getData() == rhs.getData() && getIndex() == rhs.getIndex();
+         }
 
      private:
         int data_;
         int index_;
-        bool visitado_{false};
+        bool visitado_ {false};
+        int altura_ {0};
     };
 
     Grafo();
@@ -38,19 +50,12 @@ class Grafo {
     bool deletarAresta(int v1, int v2);
     void imprimirListaAdjacentes();
     void imprimirVertices();
-    int DFS(int data);
-    int existe(int data);
+    int DFS();
+    int existe(Vertice& v, stack<Vertice&>& sck, int data, int& index);
     int vertices{0};
     int arestas{0};
     int ultimo{0};
 };
 
-bool operator==(const Grafo::Vertice &lhs, const Grafo::Vertice &rhs) {
-      return lhs.getData() == rhs.getData() && lhs.getIndex() == rhs.getIndex();
-}
-
-bool operator<(const Grafo::Vertice &lhs, const Grafo::Vertice &rhs) {
-   return lhs.getIndex() < rhs.getIndex();
-}
 
 #endif // GRAFO_H

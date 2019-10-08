@@ -8,23 +8,22 @@ int main(int argc, char* argv[]) {
 
     gr.imprimirVertices();
     
-    for(int i = 0; i < 10; i++) {
-        gr.inserirVertice(i+5);
-    }
+    gr.inserirVertice(45);
+    gr.inserirVertice(65);
+    gr.inserirVertice(5);
+    gr.inserirVertice(75);
+    gr.inserirVertice(63);
 
-    // gr->imprimirVertices();
-
-    gr.inserirAresta(2, 4);
-    gr.inserirAresta(2, 5);
-    gr.inserirAresta(3, 6);
+    gr.inserirAresta(0, 1);
+    gr.inserirAresta(1, 2);
+    gr.inserirAresta(0, 3);
+    gr.inserirAresta(3, 4);
 
     gr.imprimirListaAdjacentes();
-    cout << endl;
-    gr.deletarVertice(5);
-    gr.deletarAresta(2, 4);
-    gr.deletarAresta(4, 2);
-    gr.imprimirListaAdjacentes();
 
+    gr.DFS();
+    // cout << (*gr.listaVertices.begin()).getAltura() <<endl;
+    //     cout << (*next(gr.listaVertices.begin())).getAltura();
     cout << endl;
 
 
