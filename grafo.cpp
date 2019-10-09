@@ -19,8 +19,8 @@ bool Grafo::inserirAresta(int v1, int v2) {
         if(vi.getIndex() == v1) {
             for(auto& vj : listaVertices) {
                 if(vj.getIndex() == v2) {
-                    vi.listaVizinhos.push_back(vj);
-                    vj.listaVizinhos.push_back(vi);
+                    listaArestas.push_back(make_pair(vi, vj));
+                    listaArestas.push_back(make_pair(vj, vi));
                     arestas++;
                     return true;
                 }
@@ -32,11 +32,15 @@ bool Grafo::inserirAresta(int v1, int v2) {
 
 bool Grafo::deletarVertice(int index) {
     for(auto& v : listaVertices){
-         if(v.getIndex() == index) {
+        if(v.getIndex() == index) {
+            for(auto& a : listaArestas) {
+                if(a.first == v || a.second == v)
+                    listaArestas.remove(a);
+            }
             listaVertices.remove(v);
             vertices--;
             return true;;
-         }
+        }
     }
     return false;
 }
@@ -46,8 +50,8 @@ bool Grafo::deletarAresta(int v1, int v2) {
         if(vi.getIndex() == v1) {
             for(auto& vj : vi.listaVizinhos) {
                 if(vj.getIndex() == v2) {
-                    vi.listaVizinhos.remove(vj);
-                    vj.listaVizinhos.remove(vi);
+                    listaArestas.remove(make_pair(vi, vj));
+                    listaArestas.remove(make_pair(vj, vi));
                     arestas--;
                     return true;
                 }
@@ -62,8 +66,9 @@ void Grafo::imprimirListaAdjacentes() {
         throw out_of_range("lista vazia!");
     for(auto& vi : listaVertices) {
         cout << "[v" << vi.getIndex() << "]: " << flush;
-        for(auto& vj : vi.listaVizinhos) {
-            cout << "[v" << vj.getIndex() << "] / " << flush;
+        for(auto& vj : listaArestas) {
+            if(vj.first == vi)
+                cout << "[v" << vj.second.getIndex() << "] / " << flush;
         }
         cout << endl;
     }
@@ -84,15 +89,17 @@ void Grafo::DFS() {
     stack.push(raiz);
 
     while(!stack.empty()) {
-        auto current = stack.top();
+        auto& current = stack.top();
         current.setColor(color::CINZA);
         stack.pop();
 
         bool branco = false;
-        for(auto& v : current.listaVizinhos) {
-            if(v.getColor() == color::BRANCO) {
-                branco = true;
-                continue;
+        for(auto& v : listaArestas) {
+            if(v.first == current) {
+                if(v.second.getColor() == color::BRANCO) {
+                    branco = true;
+                    break;
+                }
             }
         }
         if(!branco) {
@@ -101,10 +108,12 @@ void Grafo::DFS() {
             continue;
         }
         
-        for(auto& v : current.listaVizinhos) {
-            if(v.getColor() == color::BRANCO) {
-                v.setColor(color::CINZA);
-                stack.push(v);
+        for(auto& a : listaArestas) {
+            if(a.first == current){
+                if(a.second.getColor() == color::BRANCO) {
+                    a.second.setColor(color::CINZA);
+                    stack.push(a.second);
+                }
             }
         }
     }

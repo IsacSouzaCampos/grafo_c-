@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     // gr.imprimirListaAdjacentes();
 
     gr.DFS();
-    gr.BFS();
+    // gr.BFS();
     cout << endl;
 
 

@@ -4,6 +4,7 @@
 #include <stack>
 #include <queue>
 #include <list>
+#include <vector>
 
 enum color {
     BRANCO,
@@ -19,7 +20,7 @@ class Grafo {
      public:
         list<Vertice> listaVizinhos;
 
-        // Vertice() = default;
+        Vertice() = default;
 
         Vertice(int data, int index) {
             data_ = data;
@@ -50,7 +51,8 @@ class Grafo {
 
     Grafo();
     list<Vertice> listaVertices;
-   //  unordered_map<Vertice, int> umap;
+    list<pair<Vertice, Vertice>> listaArestas;
+    // pair<Vertice, Vertice> tupla;
     void inserirVertice(int data);
     bool inserirAresta(int v1, int v2);
     bool deletarVertice(int index);
