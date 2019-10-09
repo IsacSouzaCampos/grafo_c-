@@ -8,22 +8,29 @@ int main(int argc, char* argv[]) {
 
     gr.imprimirVertices();
     
-    gr.inserirVertice(45);
-    gr.inserirVertice(65);
-    gr.inserirVertice(5);
-    gr.inserirVertice(75);
-    gr.inserirVertice(63);
+    gr.inserirVertice(0);
+    gr.inserirVertice(1);
+    gr.inserirVertice(2);
+    gr.inserirVertice(3);
+    gr.inserirVertice(4);
 
     gr.inserirAresta(0, 1);
     gr.inserirAresta(1, 2);
     gr.inserirAresta(0, 3);
     gr.inserirAresta(3, 4);
 
-    gr.imprimirListaAdjacentes();
+    // for(auto& v : gr.listaVertices){
+    //     cout << "------------" << endl;
+    //     cout << v.getData() << ":" << endl;
+    //     for(auto& vi : v.listaVizinhos) {
+    //         cout << vi.getData() << endl;
+    //     }
+    // }
+
+    // gr.imprimirListaAdjacentes();
 
     gr.DFS();
-    // cout << (*gr.listaVertices.begin()).getAltura() <<endl;
-    //     cout << (*next(gr.listaVertices.begin())).getAltura();
+    gr.BFS();
     cout << endl;
 
 

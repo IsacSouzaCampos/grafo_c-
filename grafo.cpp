@@ -1,31 +1,26 @@
 #include <iostream>
-#define BRANCO 0
-#define AMARELO 1
-#define VERMEHO 2
-
 #include "grafo.h"
+
 
 
 Grafo::Grafo() = default;
 
 void Grafo::inserirVertice(int data) {
     int index = ultimo;
-    Vertice v = Vertice(data, index);
-    listaVertices.push_back(v);
+    // Vertice v = Vertice(data, index);
+    listaVertices.push_back(Vertice(data, index));
     vertices++;
     ultimo++;
 }
 
 
 bool Grafo::inserirAresta(int v1, int v2) {
-    for(Vertice& vi : listaVertices) {
+    for(auto& vi : listaVertices) {
         if(vi.getIndex() == v1) {
-            for(Vertice& vj : listaVertices) {
+            for(auto& vj : listaVertices) {
                 if(vj.getIndex() == v2) {
                     vi.listaVizinhos.push_back(vj);
                     vj.listaVizinhos.push_back(vi);
-                    // cout << vi.listaArestas.size() << endl;
-                    // cout << vj.listaArestas.size() << endl;
                     arestas++;
                     return true;
                 }
@@ -36,7 +31,7 @@ bool Grafo::inserirAresta(int v1, int v2) {
 }
 
 bool Grafo::deletarVertice(int index) {
-    for(Vertice& v : listaVertices){
+    for(auto& v : listaVertices){
          if(v.getIndex() == index) {
             listaVertices.remove(v);
             vertices--;
@@ -47,9 +42,9 @@ bool Grafo::deletarVertice(int index) {
 }
 
 bool Grafo::deletarAresta(int v1, int v2) {
-    for(Vertice& vi : listaVertices) {
+    for(auto& vi : listaVertices) {
         if(vi.getIndex() == v1) {
-            for(Vertice vj : vi.listaVizinhos) {
+            for(auto& vj : vi.listaVizinhos) {
                 if(vj.getIndex() == v2) {
                     vi.listaVizinhos.remove(vj);
                     vj.listaVizinhos.remove(vi);
@@ -65,10 +60,9 @@ bool Grafo::deletarAresta(int v1, int v2) {
 void Grafo::imprimirListaAdjacentes() {
     if(listaVertices.empty())
         throw out_of_range("lista vazia!");
-    for(Vertice vi : listaVertices) {
+    for(auto& vi : listaVertices) {
         cout << "[v" << vi.getIndex() << "]: " << flush;
-        // cout << vi.listaVizinhos.size() << endl;
-        for(Vertice vj : vi.listaVizinhos) {
+        for(auto& vj : vi.listaVizinhos) {
             cout << "[v" << vj.getIndex() << "] / " << flush;
         }
         cout << endl;
@@ -76,50 +70,77 @@ void Grafo::imprimirListaAdjacentes() {
 }
 
 void Grafo::imprimirVertices() {
-    for(Vertice v : listaVertices)
+    for(auto& v : listaVertices)
         cout << v.getData() << endl;
 }
 
-int Grafo::DFS() {
+void Grafo::DFS() {
     stack<Vertice> stack;
-    int index = -1;
-    for(Vertice& v : listaVertices)
-        v.setVisited(false);
+    for(auto& v : listaVertices) {
+        v.setColor(color::BRANCO);
+    }
+
     auto& raiz = *(listaVertices.begin());
-    
     stack.push(raiz);
 
     while(!stack.empty()) {
-        auto top = stack.top();
+        auto current = stack.top();
+        current.setColor(color::CINZA);
         stack.pop();
-        // std::cout << top.getData() << std::endl;
-        for(auto& v : top.listaVizinhos) {
-            if(!v.isVisited()) {
-                v.setVisited(true);
-                int temp = top.getAltura() + 1;
-                v.setAltura(temp);
-                cout << v.getAltura() << endl;
+
+        bool branco = false;
+        for(auto& v : current.listaVizinhos) {
+            if(v.getColor() == color::BRANCO) {
+                branco = true;
+                continue;
+            }
+        }
+        if(!branco) {
+            current.setColor(color::PRETO);
+            cout << current.getData() << endl;
+            continue;
+        }
+        
+        for(auto& v : current.listaVizinhos) {
+            if(v.getColor() == color::BRANCO) {
+                v.setColor(color::CINZA);
                 stack.push(v);
             }
         }
-        
     }
-
-    // for(Vertice& v : listaVertices) {
-    //     if(!(v.isVisited()))
-    //         index = existe(v, sck, data, index);
-    //     if(index > -1)
-    //         break;
-    // }
-    return 1;
 }
 
-// int Grafo::existe(Vertice& v, stack<Vertice&>& sck, int data, int index) {
-//     // v.setVisited(true);
-//     // sck.push(v);
-//     // for(Vertice& ver : v.listaVizinhos) {
-//     //     if(ver.getData() == data)
-//     //         return ver.getIndex();
-//     // }
-//     return -1;
-// }
+void Grafo::BFS() {
+    queue<Vertice> queue;
+    for(auto& v : listaVertices) {
+        v.setColor(color::BRANCO);
+    }
+
+    auto& raiz = *(listaVertices.begin());
+    queue.push(raiz);
+
+    while(!queue.empty()) {
+        auto current = queue.front();
+        current.setColor(color::CINZA);
+        queue.pop();
+
+        bool branco = false;
+        for(auto& v : current.listaVizinhos) {
+            if(v.getColor() == color::BRANCO)
+                branco = true;
+                continue;
+        }
+        if(!branco) {
+            current.setColor(color::PRETO);
+            cout << current.getData() << endl;
+            continue;
+        }
+        
+        for(auto& v : current.listaVizinhos) {
+            if(v.getColor() == color::BRANCO) {
+                v.setColor(color::CINZA);
+                queue.push(v);
+            }
+        }
+    }
+}
