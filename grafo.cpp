@@ -7,7 +7,6 @@ Grafo::Grafo() = default;
 
 void Grafo::inserirVertice(int data) {
     int index = ultimo;
-    // Vertice v = Vertice(data, index);
     listaVertices.push_back(Vertice(data, index));
     vertices++;
     ultimo++;
@@ -46,16 +45,12 @@ bool Grafo::deletarVertice(int index) {
 }
 
 bool Grafo::deletarAresta(int v1, int v2) {
-    for(auto& vi : listaVertices) {
-        if(vi.getIndex() == v1) {
-            for(auto& vj : vi.listaVizinhos) {
-                if(vj.getIndex() == v2) {
-                    listaArestas.remove(make_pair(vi, vj));
-                    listaArestas.remove(make_pair(vj, vi));
-                    arestas--;
-                    return true;
-                }
-            }
+    for(auto& a : listaArestas) {
+        if(a.first.getIndex() == v1 && a.second.getIndex() == v2) {
+            listaArestas.remove(make_pair(a.first, a.second));
+            listaArestas.remove(make_pair(a.second, a.first));
+            arestas--;
+            return true;
         }
     }
     return false;
@@ -80,23 +75,29 @@ void Grafo::imprimirVertices() {
 }
 
 void Grafo::DFS() {
-    stack<Vertice> stack;
-    for(auto& v : listaVertices) {
-        v.setColor(color::BRANCO);
+    stack<Vertice> stack;   // cria a stack
+    for(auto& a : listaArestas) {   // setta todos os vertices para branco
+        a.first.setColor(color::BRANCO);
+        a.second.setColor(color::BRANCO);
     }
 
-    auto& raiz = *(listaVertices.begin());
-    stack.push(raiz);
+    auto raiz = *(listaVertices.begin());  // copia do primeiro vertice da lista
+    stack.push(raiz);   // poe o vertice na stack
 
     while(!stack.empty()) {
-        auto& current = stack.top();
-        current.setColor(color::CINZA);
-        stack.pop();
+        auto current = stack.top();    // cópia do vertice da stack
+        for(auto& a : listaArestas) {
+            if(a.first == current) {
+                a.first.setColor(color::CINZA);
+            } else if(a.second == current) {
+                a.second.setColor(color::CINZA);
+            }
+        }
 
         bool branco = false;
-        for(auto& v : listaArestas) {
-            if(v.first == current) {
-                if(v.second.getColor() == color::BRANCO) {
+        for(auto& a : listaArestas) {
+            if(a.first == current) {
+                if(a.second.getColor() == color::BRANCO) {
                     branco = true;
                     break;
                 }
@@ -104,14 +105,21 @@ void Grafo::DFS() {
         }
         if(!branco) {
             current.setColor(color::PRETO);
+            for(auto& a : listaArestas) {
+                if(a.first == current) {
+                    a.first.setColor(color::PRETO);
+                } else if(a.second == current) {
+                    a.second.setColor(color::PRETO);
+                }
+            }
             cout << current.getData() << endl;
-            continue;
+            stack.pop();
         }
         
         for(auto& a : listaArestas) {
             if(a.first == current){
                 if(a.second.getColor() == color::BRANCO) {
-                    a.second.setColor(color::CINZA);
+                    // a.second.setColor(color::CINZA);
                     stack.push(a.second);
                 }
             }
@@ -121,35 +129,53 @@ void Grafo::DFS() {
 
 void Grafo::BFS() {
     queue<Vertice> queue;
-    for(auto& v : listaVertices) {
-        v.setColor(color::BRANCO);
+    for(auto& a : listaArestas) {
+        a.first.setColor(color::BRANCO);
+        a.second.setColor(color::BRANCO);
     }
 
-    auto& raiz = *(listaVertices.begin());
+    auto raiz = *(listaVertices.begin());
     queue.push(raiz);
 
     while(!queue.empty()) {
         auto current = queue.front();
-        current.setColor(color::CINZA);
-        queue.pop();
+        for(auto& a : listaArestas) {
+            if(a.first == current) {
+                a.first.setColor(color::CINZA);
+            } else if(a.second == current) {
+                a.second.setColor(color::CINZA);
+            }
+        }
 
         bool branco = false;
-        for(auto& v : current.listaVizinhos) {
-            if(v.getColor() == color::BRANCO)
-                branco = true;
-                continue;
+        for(auto& a : listaArestas) {
+            if(a.first == current) {
+                if(a.second.getColor() == color::BRANCO) {
+                    branco = true;
+                    continue;
+                }
+            }
         }
         if(!branco) {
             current.setColor(color::PRETO);
-            cout << current.getData() << endl;
-            continue;
-        }
-        
-        for(auto& v : current.listaVizinhos) {
-            if(v.getColor() == color::BRANCO) {
-                v.setColor(color::CINZA);
-                queue.push(v);
+            for(auto& a : listaArestas) {
+                if(a.first == current) {
+                    a.first.setColor(color::PRETO);
+                } else if(a.second == current) {
+                    a.second.setColor(color::PRETO);
+                }
             }
         }
+        
+        for(auto& a : listaArestas) {
+            if(a.first == current) {
+                if(a.second.getColor() == color::BRANCO) {
+                    a.second.setColor(color::CINZA);
+                    queue.push(a.second);
+                }
+            }
+        }
+        queue.pop();
+        cout << current.getData() << endl;
     }
 }

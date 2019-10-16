@@ -18,7 +18,6 @@ class Grafo {
  public:
     class Vertice {
      public:
-        list<Vertice> listaVizinhos;
 
         Vertice() = default;
 
@@ -52,20 +51,18 @@ class Grafo {
     Grafo();
     list<Vertice> listaVertices;
     list<pair<Vertice, Vertice>> listaArestas;
-    // pair<Vertice, Vertice> tupla;
+    list<pair<pair<Vertice, Vertice>, int>> listaPesos;
     void inserirVertice(int data);
     bool inserirAresta(int v1, int v2);
     bool deletarVertice(int index);
     bool deletarAresta(int v1, int v2);
     void imprimirListaAdjacentes();
     void imprimirVertices();
-    void DFS();
-    void BFS();
-    int existe(Vertice& v, stack<Vertice&>& sck, int data, int& index);
+    void DFS(); // busca em profundidade
+    void BFS(); // busca em largura
     int vertices{0};
     int arestas{0};
     int ultimo{0};
 };
-
 
 #endif // GRAFO_H
