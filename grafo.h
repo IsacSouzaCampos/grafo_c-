@@ -4,7 +4,8 @@
 #include <stack>
 #include <queue>
 #include <list>
-#include <vector>
+// #include <vector>
+#include <limits.h>
 
 enum color {
     BRANCO,
@@ -31,6 +32,8 @@ class Grafo {
         void setColor(color visitado) { visitado_ = visitado; }
         int getAltura() const { return altura_; }
         void setAltura(int altura) { altura_ = altura; }
+        int getDistancia() const { return distancia_; }
+        void setDistancia(int distancia) { distancia_ = distancia; }
 
 
          bool operator<(const Grafo::Vertice &rhs) const {
@@ -45,21 +48,23 @@ class Grafo {
         int data_;
         int index_;
         int altura_ {0};
+        int distancia_{0};
         color visitado_ {BRANCO};
     };
 
     Grafo();
     list<Vertice> listaVertices;
-    list<pair<Vertice, Vertice>> listaArestas;
-    list<pair<pair<Vertice, Vertice>, int>> listaPesos;
+    // list<pair<Vertice, Vertice>> listaArestas;
+    list<pair<pair<Vertice, Vertice>, int>> listaArestas;
     void inserirVertice(int data);
-    bool inserirAresta(int v1, int v2);
+    bool inserirAresta(int v1, int v2, int peso);
     bool deletarVertice(int index);
     bool deletarAresta(int v1, int v2);
     void imprimirListaAdjacentes();
     void imprimirVertices();
     void DFS(); // busca em profundidade
     void BFS(); // busca em largura
+    void dijkstra();
     int vertices{0};
     int arestas{0};
     int ultimo{0};

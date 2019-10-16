@@ -14,23 +14,16 @@ int main(int argc, char* argv[]) {
     gr.inserirVertice(3);
     gr.inserirVertice(4);
 
-    gr.inserirAresta(0, 1);
-    gr.inserirAresta(1, 2);
-    gr.inserirAresta(0, 3);
-    gr.inserirAresta(3, 4);
-
-    // for(auto& v : gr.listaVertices){
-    //     cout << "------------" << endl;
-    //     cout << v.getData() << ":" << endl;
-    //     for(auto& vi : v.listaVizinhos) {
-    //         cout << vi.getData() << endl;
-    //     }
-    // }
+    gr.inserirAresta(0, 1, 1);
+    gr.inserirAresta(1, 2, 3);
+    gr.inserirAresta(0, 3, 5);
+    gr.inserirAresta(3, 4, 2);
 
     // gr.imprimirListaAdjacentes();
 
     // gr.DFS();
-    gr.BFS();
+    // gr.BFS();
+    gr.dijkstra();
     cout << endl;
 
     return 0;
