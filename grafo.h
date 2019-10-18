@@ -4,7 +4,7 @@
 #include <stack>
 #include <queue>
 #include <list>
-// #include <vector>
+#include <bits/stdc++.h> 
 #include <limits.h>
 
 enum color {

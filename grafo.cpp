@@ -19,11 +19,7 @@ bool Grafo::inserirAresta(int v1, int v2, int peso) {
             for(auto& vj : listaVertices) {
                 if(vj.getIndex() == v2) {
                     pair<Vertice, Vertice> p1(vi, vj);
-                    pair<Vertice, Vertice> p2(vj, vi);
-                    // listaArestas.push_back(p1);
-                    // listaArestas.push_back(p2);
                     listaArestas.push_back(make_pair(p1, peso));
-                    listaArestas.push_back(make_pair(p2, peso));
                     arestas++;
                     return true;
                 }
@@ -39,9 +35,7 @@ bool Grafo::deletarVertice(int index) {
             for(auto& a : listaArestas) {
                 if(a.first.first == v || a.first.second == v) {
                     pair<Vertice, Vertice> p1(a.first.first, a.first.second);
-                    pair<Vertice, Vertice> p2(a.first.second, a.first.first);
                     listaArestas.remove(make_pair(p1, a.second));
-                    listaArestas.remove(make_pair(p2, a.second));
                 }
             }
             listaVertices.remove(v);
@@ -56,9 +50,7 @@ bool Grafo::deletarAresta(int v1, int v2) {
     for(auto& a : listaArestas) {
         if(a.first.first.getIndex() == v1 && a.first.second.getIndex() == v2) {
             pair<Vertice, Vertice> p1(a.first.first, a.first.second);
-            pair<Vertice, Vertice> p2(a.first.second, a.first.first);
             listaArestas.remove(make_pair(p1, a.second));
-            listaArestas.remove(make_pair(p2, a.second));
             arestas--;
             return true;
         }
@@ -191,48 +183,36 @@ void Grafo::BFS() {
 }
 
 void Grafo::dijkstra() {
-    int qtd_fechados = listaVertices.size();
-    list<pair<Vertice, int>> dist;
+    // int qtd_fechados = listaVertices.size();
+    typedef pair<int, Vertice> p;
+    priority_queue<p, vector<p>, greater<p>> dist;
     for(auto& v : listaVertices) {
         v.setColor(color::BRANCO);
-        dist.push_back(make_pair(v, INT_MAX/2));
+        v.setDistancia(INT_MAX/2);
     }
 
-    auto current = *(dist.begin());
-    auto prox = *(dist.begin());
-    current.first.setDistancia(0);
-    current.first.setColor(color::PRETO);
-    current.second = 0;
-    dist.pop_front();
-    dist.push_front(make_pair(current.first, 0));
-    
+    auto& temp = *(listaVertices.begin());
+    temp.setDistancia(0);
+    auto current = *(listaVertices.begin());
+    current.setColor(color::PRETO);
+    current.setDistancia(0);
+    dist.push(make_pair(0, current));
 
-    int menor_distancia = INT_MAX/2;
-    while(qtd_fechados) {
-        int distancia = current.second;
+    while(!dist.empty()) {
+        dist.pop();
         for(auto& a : listaArestas) {
-            if(a.first.first == current.first) {                                            // se first do pair = current
-                for(auto& d : dist) {                                                       // atualizar lista de distancias
-                    if(d.first == a.first.second && d.first.getColor() == color::BRANCO) {  // se elemento do d = vizinho do current                                          // distancia = current.get
-                        d.second = distancia + a.second;                                    // atualiza distancia do vizinho em dist
-
-                        if(d.second < menor_distancia) {
-                            menor_distancia = d.second;                                    // atualiza a menor distancia
-                            prox = d;                                                       // atualiza o prox vetor (menor dist)
-                        }
-                        break;
+            if(a.first.first == current) {
+                for(auto& v : listaVertices) {
+                    if(v == a.first.second && v.getDistancia() > current.getDistancia() + a.second) {
+                        v.setDistancia(current.getDistancia() + a.second);
+                        dist.push(make_pair(v.getDistancia(), v));
                     }
                 }
             }
-        }   // finaliza atualizacao dos vizinhosm de current
-        // if(prox.first.getColor() == color::PRETO)
-        //     qtd_fechados++;
-        prox.first.setColor(color::PRETO);
-        current = prox;
-        menor_distancia = current.second;
-        qtd_fechados--;
+        }
+        current = dist.top().second;
     }
 
-    for(auto& d : dist)
-        cout << d.first.getData() << " - " << d.second << endl;
+    for(auto& v : listaVertices)
+        cout << v.getData() << " - " << v.getDistancia() << endl;
 }
