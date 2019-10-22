@@ -182,13 +182,15 @@ void Grafo::BFS() {
     }
 }
 
-void Grafo::dijkstra() {
+list<pair<int, int>> Grafo::dijkstra() {
     // int qtd_fechados = listaVertices.size();
+    list <pair<int, int>> caminhos; // pair<atual, anterior>
     typedef pair<int, Vertice> p;
     priority_queue<p, vector<p>, greater<p>> dist;
     for(auto& v : listaVertices) {
         v.setColor(color::BRANCO);
         v.setDistancia(INT_MAX/2);
+        caminhos.push_back(make_pair(v.getIndex(), v.getIndex()));
     }
 
     auto& temp = *(listaVertices.begin());
@@ -206,6 +208,10 @@ void Grafo::dijkstra() {
                     if(v == a.first.second && v.getDistancia() > current.getDistancia() + a.second) {
                         v.setDistancia(current.getDistancia() + a.second);
                         dist.push(make_pair(v.getDistancia(), v));
+                        for(auto& c : caminhos) {
+                            if(c.first == v.getIndex())
+                                c.second = current.getIndex();
+                        }
                     }
                 }
             }
@@ -213,6 +219,30 @@ void Grafo::dijkstra() {
         current = dist.top().second;
     }
 
-    for(auto& v : listaVertices)
-        cout << v.getData() << " - " << v.getDistancia() << endl;
+    // for(auto& v : listaVertices)
+    //     cout << v.getData() << " - " << v.getDistancia() << endl;
+    return caminhos;
+}
+
+void Grafo::imprimirCaminho(int index1, int index2, list<pair<int, int>> caminhos) {
+    stack<int> stack;
+
+    int current = index2;
+    stack.push(current);
+    while(current != index1) {
+        for(auto& c : caminhos) {
+            if(c.first == current) {
+                stack.push(c.second);
+                current = c.second;
+                break;
+            }
+        }
+    }
+
+    cout << stack.top();
+    stack.pop();
+    while(!stack.empty()) {
+        cout << " -> " << stack.top();
+        stack.pop();
+    }
 }

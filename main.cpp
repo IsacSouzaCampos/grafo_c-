@@ -37,7 +37,10 @@ int main(int argc, char* argv[]) {
     cout << endl;
     gr.BFS();
     cout << endl;
-    gr.dijkstra();
+    list<pair<int, int>> caminhos = gr.dijkstra();
+    gr.imprimirCaminho(0, 5, caminhos);
+    cout << endl;
+    gr.imprimirCaminho(0, 3, caminhos);
     cout << endl;
 
     return 0;
