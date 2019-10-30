@@ -88,13 +88,7 @@ void Grafo::DFS() {
 
     while(!stack.empty()) {
         auto current = stack.top();    // cópia do vertice da stack
-        for(auto& a : listaArestas) {
-            if(a.first.first == current) {
-                a.first.first.setColor(color::CINZA);
-            } else if(a.first.second == current) {
-                a.first.second.setColor(color::CINZA);
-            }
-        }
+        atualizarListaArestas(current);
 
         bool branco = false;
         for(auto& a : listaArestas) {
@@ -121,7 +115,7 @@ void Grafo::DFS() {
         for(auto& a : listaArestas) {
             if(a.first.first == current){
                 if(a.first.second.getColor() == color::BRANCO) {
-                    // a.first.second.setColor(color::CINZA);
+                    atualizarListaArestas(a.first.second);
                     stack.push(a.first.second);
                 }
             }
@@ -141,20 +135,14 @@ void Grafo::BFS() {
 
     while(!queue.empty()) {
         auto current = queue.front();
-        for(auto& a : listaArestas) {
-            if(a.first.first == current) {
-                a.first.first.setColor(color::CINZA);
-            } else if(a.first.second == current) {
-                a.first.second.setColor(color::CINZA);
-            }
-        }
+        atualizarListaArestas(current);
 
         bool branco = false;
         for(auto& a : listaArestas) {
             if(a.first.first == current) {
                 if(a.first.second.getColor() == color::BRANCO) {
                     branco = true;
-                    continue;
+                    break;
                 }
             }
         }
@@ -172,7 +160,7 @@ void Grafo::BFS() {
         for(auto& a : listaArestas) {
             if(a.first.first == current) {
                 if(a.first.second.getColor() == color::BRANCO) {
-                    a.first.second.setColor(color::CINZA);
+                    atualizarListaArestas(a.first.second);
                     queue.push(a.first.second);
                 }
             }
@@ -222,6 +210,29 @@ list<pair<int, int>> Grafo::dijkstra() {
     // for(auto& v : listaVertices)
     //     cout << v.getData() << " - " << v.getDistancia() << endl;
     return caminhos;
+}
+
+void Grafo::maze(int index1, int index2) {
+    Vertice v1, v2;
+    for(auto& v : listaVertices) {
+        if(v.getIndex() == index1) {
+            v1 = v;
+        } else if(v.getIndex() == index2) {
+            v2 = v;
+        }
+    }
+
+
+}
+
+void Grafo::atualizarListaArestas(Vertice& v) {
+    for(auto& a : listaArestas) {
+        if(a.first.first == v) {
+            a.first.first.setColor(color::CINZA);
+        } else if(a.first.second == v) {
+            a.first.second.setColor(color::CINZA);
+        }
+    }
 }
 
 void Grafo::imprimirCaminho(int index1, int index2, list<pair<int, int>> caminhos) {

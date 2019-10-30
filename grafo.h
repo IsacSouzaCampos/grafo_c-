@@ -65,6 +65,8 @@ class Grafo {
     void DFS(); // busca em profundidade
     void BFS(); // busca em largura
     list<pair<int, int>> dijkstra();
+    void maze(int index1, int index2);
+    void atualizarListaArestas(Vertice& v);
     void imprimirCaminho(int index1, int index2, list<pair<int, int>> caminhos);
     int vertices{0};
     int arestas{0};
