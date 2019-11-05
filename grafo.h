@@ -6,6 +6,7 @@
 #include <list>
 #include <bits/stdc++.h> 
 #include <limits.h>
+#include <map>
 
 enum color {
     BRANCO,
@@ -53,8 +54,8 @@ class Grafo {
     };
 
     Grafo();
-    list<Vertice> listaVertices;
-    list<pair<pair<Vertice, Vertice>, int>> listaArestas;
+    list<Vertice> lista_vertices;
+    list<pair<pair<Vertice, Vertice>, int>> lista_arestas;
     void inserirVertice(int data);
     bool inserirAresta(int v1, int v2, int peso);
     bool deletarVertice(int index);
@@ -67,6 +68,8 @@ class Grafo {
     void maze(int index1, int index2);
     void atualizarCorLista(Vertice& v, color cor);
     void imprimirCaminho(int index1, int index2, list<pair<int, int>> caminhos);
+    map<Vertice, list<Vertice>> map_lista_adj;
+    map<Vertice, color> map_cor;
     int vertices{0};
     int arestas{0};
     int ultimo{0};

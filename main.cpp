@@ -6,7 +6,7 @@ using namespace std;
 int main(int argc, char* argv[]) {
     Grafo gr = Grafo();
     
-    int linhas = 10, colunas = 10;
+    int linhas = 3, colunas = 3;
     for(int i = 0; i < linhas*colunas; i++) {
         gr.inserirVertice(i);
     }
@@ -28,15 +28,23 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // for(auto& m : gr.lista_adj) {
+    //     cout << m.first.getIndex() << ": " << flush;
+    //     for(auto& ml : m.second) {
+    //         cout << ml.getIndex() << " / " << flush;
+    //     }
+    //     cout << endl;
+    // }
+
     gr.DFS();
-    cout << endl;
-    gr.BFS();
-    cout << endl;
-    list<pair<int, int>> caminhos = gr.dijkstra();
-    gr.imprimirCaminho(0, 55, caminhos);
-    cout << endl;
-    gr.imprimirCaminho(0, 33, caminhos);
-    cout << endl;
+    // cout << endl;
+    // gr.BFS();
+    // cout << endl;
+    // list<pair<int, int>> caminhos = gr.dijkstra();
+    // gr.imprimirCaminho(0, 55, caminhos);
+    // cout << endl;
+    // gr.imprimirCaminho(0, 33, caminhos);
+    // cout << endl;
 
     return 0;
 }

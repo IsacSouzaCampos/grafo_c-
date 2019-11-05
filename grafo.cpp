@@ -7,19 +7,23 @@ Grafo::Grafo() = default;
 
 void Grafo::inserirVertice(int data) {
     int index = ultimo;
-    listaVertices.push_back(Vertice(data, index));
+    lista_vertices.push_back(Vertice(data, index));
+    Vertice v = Vertice(data, index);
+    map_lista_adj[v];
+    map_cor[v] = color::BRANCO;
     vertices++;
     ultimo++;
 }
 
 
 bool Grafo::inserirAresta(int v1, int v2, int peso) {
-    for(auto& vi : listaVertices) {
+    for(auto& vi : lista_vertices) {
         if(vi.getIndex() == v1) {
-            for(auto& vj : listaVertices) {
+            for(auto& vj : lista_vertices) {
                 if(vj.getIndex() == v2) {
                     pair<Vertice, Vertice> p1(vi, vj);
-                    listaArestas.push_back(make_pair(p1, peso));
+                    lista_arestas.push_back(make_pair(p1, peso));
+                    map_lista_adj[vi].push_back(vj);
                     arestas++;
                     return true;
                 }
@@ -30,15 +34,15 @@ bool Grafo::inserirAresta(int v1, int v2, int peso) {
 }
 
 bool Grafo::deletarVertice(int index) {
-    for(auto& v : listaVertices){
+    for(auto& v : lista_vertices){
         if(v.getIndex() == index) {
-            for(auto& a : listaArestas) {
+            for(auto& a : lista_arestas) {
                 if(a.first.first == v || a.first.second == v) {
                     pair<Vertice, Vertice> p1(a.first.first, a.first.second);
-                    listaArestas.remove(make_pair(p1, a.second));
+                    lista_arestas.remove(make_pair(p1, a.second));
                 }
             }
-            listaVertices.remove(v);
+            lista_vertices.remove(v);
             vertices--;
             return true;;
         }
@@ -47,10 +51,10 @@ bool Grafo::deletarVertice(int index) {
 }
 
 bool Grafo::deletarAresta(int v1, int v2) {
-    for(auto& a : listaArestas) {
+    for(auto& a : lista_arestas) {
         if(a.first.first.getIndex() == v1 && a.first.second.getIndex() == v2) {
             pair<Vertice, Vertice> p1(a.first.first, a.first.second);
-            listaArestas.remove(make_pair(p1, a.second));
+            lista_arestas.remove(make_pair(p1, a.second));
             arestas--;
             return true;
         }
@@ -59,11 +63,11 @@ bool Grafo::deletarAresta(int v1, int v2) {
 }
 
 void Grafo::imprimirListaAdjacentes() {
-    if(listaVertices.empty())
+    if(lista_vertices.empty())
         throw out_of_range("lista vazia!");
-    for(auto& vi : listaVertices) {
+    for(auto& vi : lista_vertices) {
         cout << "[v" << vi.getIndex() << "]: " << flush;
-        for(auto& a : listaArestas) {
+        for(auto& a : lista_arestas) {
             if(a.first.first == vi)
                 cout << "[v" << a.first.second.getIndex() << "] / " << flush;
         }
@@ -72,45 +76,43 @@ void Grafo::imprimirListaAdjacentes() {
 }
 
 void Grafo::imprimirVertices() {
-    for(auto& v : listaVertices)
+    for(auto& v : lista_vertices)
         cout << v.getData() << endl;
 }
 
 void Grafo::DFS() {
     stack<Vertice> stack;   // cria a stack
-    for(auto& a : listaArestas) {   // setta todos os vertices para branco
-        a.first.first.setColor(color::BRANCO);
-        a.first.second.setColor(color::BRANCO);
+    for(auto& m : map_cor) {   // setta todos os vertices para branco
+        m.second = color::BRANCO;
     }
 
-    auto raiz = *(listaVertices.begin());  // copia do primeiro vertice da lista
-    stack.push(raiz);   // poe o vertice na stack
+    auto raiz = *(map_lista_adj.begin());  // copia do primeiro vertice da lista
+    stack.push(raiz.first);   // poe o vertice na stack
 
     while(!stack.empty()) {
         auto current = stack.top();    // cópia do vertice da stack
-        atualizarCorLista(current, color::CINZA);
+        // atualizarCorLista(current, color::CINZA);
+        map_cor[current] = color::CINZA;
 
         bool branco = false;
-        for(auto& a : listaArestas) {
-            if(a.first.first == current) {
-                if(a.first.second.getColor() == color::BRANCO) {
-                    branco = true;
-                    break;
-                }
+        for(auto& la : map_lista_adj[current]) {
+            if(map_cor[la] == color::BRANCO) {
+                branco = true;
+                break;
             }
         }
         if(!branco) {
-            atualizarCorLista(current, color::PRETO);
+            // atualizarCorLista(current, color::PRETO);
+            map_cor[current] = color::PRETO;
             cout << current.getData() << endl;
             stack.pop();
         }
         
-        for(auto& a : listaArestas) {
-            if(a.first.first == current){
-                if(a.first.second.getColor() == color::BRANCO) {
-                    atualizarCorLista(a.first.second, color::CINZA);
-                    stack.push(a.first.second);
-                }
+        for(auto& la : map_lista_adj[current]) {
+            if(map_cor[la] == color::BRANCO) {
+                // atualizarCorLista(a.first.second, color::CINZA);
+                map_cor[la] = color::CINZA;
+                stack.push(la);
             }
         }
     }
@@ -118,12 +120,12 @@ void Grafo::DFS() {
 
 void Grafo::BFS() {
     queue<Vertice> queue;
-    for(auto& a : listaArestas) {
+    for(auto& a : lista_arestas) {
         a.first.first.setColor(color::BRANCO);
         a.first.second.setColor(color::BRANCO);
     }
 
-    auto raiz = *(listaVertices.begin());
+    auto raiz = *(lista_vertices.begin());
     queue.push(raiz);
 
     while(!queue.empty()) {
@@ -131,7 +133,7 @@ void Grafo::BFS() {
         atualizarCorLista(current, color::PRETO);
 
         bool branco = false;
-        for(auto& a : listaArestas) {
+        for(auto& a : lista_arestas) {
             if(a.first.first == current) {
                 if(a.first.second.getColor() == color::BRANCO) {
                     branco = true;
@@ -142,7 +144,7 @@ void Grafo::BFS() {
         if(!branco)
             atualizarCorLista(current, color::PRETO);
         
-        for(auto& a : listaArestas) {
+        for(auto& a : lista_arestas) {
             if(a.first.first == current) {
                 if(a.first.second.getColor() == color::BRANCO) {
                     atualizarCorLista(a.first.second, color::CINZA);
@@ -156,28 +158,28 @@ void Grafo::BFS() {
 }
 
 list<pair<int, int>> Grafo::dijkstra() {
-    // int qtd_fechados = listaVertices.size();
+    // int qtd_fechados = lista_vertices.size();
     list <pair<int, int>> caminhos; // pair<atual, anterior>
     typedef pair<int, Vertice> p;
     priority_queue<p, vector<p>, greater<p>> dist;
-    for(auto& v : listaVertices) {
+    for(auto& v : lista_vertices) {
         v.setColor(color::BRANCO);
         v.setDistancia(INT_MAX/2);
         caminhos.push_back(make_pair(v.getIndex(), v.getIndex()));
     }
 
-    auto& temp = *(listaVertices.begin());
+    auto& temp = *(lista_vertices.begin());
     temp.setDistancia(0);
-    auto current = *(listaVertices.begin());
+    auto current = *(lista_vertices.begin());
     current.setColor(color::PRETO);
     current.setDistancia(0);
     dist.push(make_pair(0, current));
 
     while(!dist.empty()) {
         dist.pop();
-        for(auto& a : listaArestas) {
+        for(auto& a : lista_arestas) {
             if(a.first.first == current) {
-                for(auto& v : listaVertices) {
+                for(auto& v : lista_vertices) {
                     if(v == a.first.second && v.getDistancia() > current.getDistancia() + a.second) {
                         v.setDistancia(current.getDistancia() + a.second);
                         dist.push(make_pair(v.getDistancia(), v));
@@ -192,14 +194,14 @@ list<pair<int, int>> Grafo::dijkstra() {
         current = dist.top().second;
     }
 
-    // for(auto& v : listaVertices)
+    // for(auto& v : lista_vertices)
     //     cout << v.getData() << " - " << v.getDistancia() << endl;
     return caminhos;
 }
 
 void Grafo::maze(int index1, int index2) {
     Vertice v1, v2;
-    for(auto& v : listaVertices) {
+    for(auto& v : lista_vertices) {
         if(v.getIndex() == index1) {
             v1 = v;
         } else if(v.getIndex() == index2) {
@@ -211,7 +213,7 @@ void Grafo::maze(int index1, int index2) {
 }
 
 void Grafo::atualizarCorLista(Vertice& v, color cor) {
-    for(auto& a : listaArestas) {
+    for(auto& a : lista_arestas) {
         if(a.first.first == v) {
             a.first.first.setColor(cor);
         } else if(a.first.second == v) {
