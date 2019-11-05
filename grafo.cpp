@@ -88,7 +88,7 @@ void Grafo::DFS() {
 
     while(!stack.empty()) {
         auto current = stack.top();    // cópia do vertice da stack
-        atualizarListaArestas(current);
+        atualizarCorLista(current, color::CINZA);
 
         bool branco = false;
         for(auto& a : listaArestas) {
@@ -100,14 +100,7 @@ void Grafo::DFS() {
             }
         }
         if(!branco) {
-            current.setColor(color::PRETO);
-            for(auto& a : listaArestas) {
-                if(a.first.first == current) {
-                    a.first.first.setColor(color::PRETO);
-                } else if(a.first.second == current) {
-                    a.first.second.setColor(color::PRETO);
-                }
-            }
+            atualizarCorLista(current, color::PRETO);
             cout << current.getData() << endl;
             stack.pop();
         }
@@ -115,7 +108,7 @@ void Grafo::DFS() {
         for(auto& a : listaArestas) {
             if(a.first.first == current){
                 if(a.first.second.getColor() == color::BRANCO) {
-                    atualizarListaArestas(a.first.second);
+                    atualizarCorLista(a.first.second, color::CINZA);
                     stack.push(a.first.second);
                 }
             }
@@ -135,7 +128,7 @@ void Grafo::BFS() {
 
     while(!queue.empty()) {
         auto current = queue.front();
-        atualizarListaArestas(current);
+        atualizarCorLista(current, color::PRETO);
 
         bool branco = false;
         for(auto& a : listaArestas) {
@@ -146,21 +139,13 @@ void Grafo::BFS() {
                 }
             }
         }
-        if(!branco) {
-            current.setColor(color::PRETO);
-            for(auto& a : listaArestas) {
-                if(a.first.first == current) {
-                    a.first.first.setColor(color::PRETO);
-                } else if(a.first.second == current) {
-                    a.first.second.setColor(color::PRETO);
-                }
-            }
-        }
+        if(!branco)
+            atualizarCorLista(current, color::PRETO);
         
         for(auto& a : listaArestas) {
             if(a.first.first == current) {
                 if(a.first.second.getColor() == color::BRANCO) {
-                    atualizarListaArestas(a.first.second);
+                    atualizarCorLista(a.first.second, color::CINZA);
                     queue.push(a.first.second);
                 }
             }
@@ -225,12 +210,12 @@ void Grafo::maze(int index1, int index2) {
 
 }
 
-void Grafo::atualizarListaArestas(Vertice& v) {
+void Grafo::atualizarCorLista(Vertice& v, color cor) {
     for(auto& a : listaArestas) {
         if(a.first.first == v) {
-            a.first.first.setColor(color::CINZA);
+            a.first.first.setColor(cor);
         } else if(a.first.second == v) {
-            a.first.second.setColor(color::CINZA);
+            a.first.second.setColor(cor);
         }
     }
 }

@@ -54,7 +54,6 @@ class Grafo {
 
     Grafo();
     list<Vertice> listaVertices;
-    // list<pair<Vertice, Vertice>> listaArestas;
     list<pair<pair<Vertice, Vertice>, int>> listaArestas;
     void inserirVertice(int data);
     bool inserirAresta(int v1, int v2, int peso);
@@ -66,7 +65,7 @@ class Grafo {
     void BFS(); // busca em largura
     list<pair<int, int>> dijkstra();
     void maze(int index1, int index2);
-    void atualizarListaArestas(Vertice& v);
+    void atualizarCorLista(Vertice& v, color cor);
     void imprimirCaminho(int index1, int index2, list<pair<int, int>> caminhos);
     int vertices{0};
     int arestas{0};
