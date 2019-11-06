@@ -11,6 +11,7 @@ void Grafo::inserirVertice(int data) {
     Vertice v = Vertice(data, index);
     map_lista_adj[v];
     map_cor[v] = color::BRANCO;
+    map_distancia[v] = 0;
     vertices++;
     ultimo++;
 }
@@ -24,6 +25,7 @@ bool Grafo::inserirAresta(int v1, int v2, int peso) {
                     pair<Vertice, Vertice> p1(vi, vj);
                     lista_arestas.push_back(make_pair(p1, peso));
                     map_lista_adj[vi].push_back(vj);
+                    map_peso[make_pair(vi, vj)] = peso;
                     arestas++;
                     return true;
                 }
@@ -82,9 +84,8 @@ void Grafo::imprimirVertices() {
 
 void Grafo::DFS() {
     stack<Vertice> stack;   // cria a stack
-    for(auto& m : map_cor) {   // setta todos os vertices para branco
-        m.second = color::BRANCO;
-    }
+    for(auto& mc : map_cor)   // setta todos os vertices para branco
+        mc.second = color::BRANCO;
 
     auto raiz = *(map_lista_adj.begin());  // copia do primeiro vertice da lista
     stack.push(raiz.first);   // poe o vertice na stack
@@ -120,36 +121,32 @@ void Grafo::DFS() {
 
 void Grafo::BFS() {
     queue<Vertice> queue;
-    for(auto& a : lista_arestas) {
-        a.first.first.setColor(color::BRANCO);
-        a.first.second.setColor(color::BRANCO);
-    }
+    for(auto& mc : map_cor)
+        mc.second = color::BRANCO;
 
-    auto raiz = *(lista_vertices.begin());
-    queue.push(raiz);
+    auto raiz = *(map_lista_adj.begin());
+    queue.push(raiz.first);
 
     while(!queue.empty()) {
         auto current = queue.front();
-        atualizarCorLista(current, color::PRETO);
+        // atualizarCorLista(current, color::PRETO);
+        map_cor[current] = color::PRETO;
 
         bool branco = false;
-        for(auto& a : lista_arestas) {
-            if(a.first.first == current) {
-                if(a.first.second.getColor() == color::BRANCO) {
-                    branco = true;
-                    break;
-                }
+        for(auto& la : map_lista_adj[current]) {
+            if(map_cor[la] == color::BRANCO) {
+                branco = true;
+                break;
             }
         }
         if(!branco)
-            atualizarCorLista(current, color::PRETO);
+            map_cor[current] = color::PRETO;
+            // atualizarCorLista(current, color::PRETO);
         
-        for(auto& a : lista_arestas) {
-            if(a.first.first == current) {
-                if(a.first.second.getColor() == color::BRANCO) {
-                    atualizarCorLista(a.first.second, color::CINZA);
-                    queue.push(a.first.second);
-                }
+        for(auto& la : map_lista_adj[current]) {
+            if(map_cor[la] == color::BRANCO) {
+                map_cor[la] = color::CINZA;
+                queue.push(la);
             }
         }
         queue.pop();
@@ -157,45 +154,61 @@ void Grafo::BFS() {
     }
 }
 
-list<pair<int, int>> Grafo::dijkstra() {
+map<int, int> Grafo::dijkstra() {
     // int qtd_fechados = lista_vertices.size();
-    list <pair<int, int>> caminhos; // pair<atual, anterior>
+    map<int, int> caminhos; // pair<atual, anterior>
     typedef pair<int, Vertice> p;
     priority_queue<p, vector<p>, greater<p>> dist;
     for(auto& v : lista_vertices) {
         v.setColor(color::BRANCO);
+        map_cor[v] = color::BRANCO;
         v.setDistancia(INT_MAX/2);
-        caminhos.push_back(make_pair(v.getIndex(), v.getIndex()));
+        map_distancia[v] = INT_MAX/2;
+        caminhos[v.getIndex()] = v.getIndex();
     }
 
     auto& temp = *(lista_vertices.begin());
     temp.setDistancia(0);
+    map_distancia[temp] = 0;
     auto current = *(lista_vertices.begin());
     current.setColor(color::PRETO);
+    map_cor[current] = color::PRETO;
     current.setDistancia(0);
+    map_distancia[current] = 0;
     dist.push(make_pair(0, current));
 
+    // while(!dist.empty()) {
+    //     dist.pop();
+    //     for(auto& a : lista_arestas) {
+    //         if(a.first.first == current) {
+    //             for(auto& v : lista_vertices) {
+    //                 if(v == a.first.second && v.getDistancia() > current.getDistancia() + a.second) {
+    //                     v.setDistancia(current.getDistancia() + a.second);
+    //                     dist.push(make_pair(v.getDistancia(), v));
+    //                     for(auto& c : caminhos) {
+    //                         if(c.first == v.getIndex())
+    //                             c.second = current.getIndex();
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     current = dist.top().second;
+    // }
     while(!dist.empty()) {
         dist.pop();
-        for(auto& a : lista_arestas) {
-            if(a.first.first == current) {
-                for(auto& v : lista_vertices) {
-                    if(v == a.first.second && v.getDistancia() > current.getDistancia() + a.second) {
-                        v.setDistancia(current.getDistancia() + a.second);
-                        dist.push(make_pair(v.getDistancia(), v));
-                        for(auto& c : caminhos) {
-                            if(c.first == v.getIndex())
-                                c.second = current.getIndex();
-                        }
-                    }
+        for(auto& la : map_lista_adj[current]) {
+            if(map_distancia[la] > map_distancia[current] + map_peso[make_pair(current, la)]) {
+                map_distancia[la] = map_distancia[current] + map_peso[make_pair(current, la)];
+                dist.push(make_pair(map_distancia[la], la));
+                for(auto& c : caminhos) {
+                    if(c.first == la.getIndex())
+                        c.second = current.getIndex();
                 }
             }
         }
         current = dist.top().second;
     }
-
-    // for(auto& v : lista_vertices)
-    //     cout << v.getData() << " - " << v.getDistancia() << endl;
     return caminhos;
 }
 
@@ -222,7 +235,7 @@ void Grafo::atualizarCorLista(Vertice& v, color cor) {
     }
 }
 
-void Grafo::imprimirCaminho(int index1, int index2, list<pair<int, int>> caminhos) {
+void Grafo::imprimirCaminho(int index1, int index2, map<int, int> caminhos) {
     stack<int> stack;
 
     int current = index2;

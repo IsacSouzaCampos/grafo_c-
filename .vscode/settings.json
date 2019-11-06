@@ -3,6 +3,9 @@
         "stdexcept": "cpp",
         "ostream": "cpp",
         "iostream": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp"
     }
 }

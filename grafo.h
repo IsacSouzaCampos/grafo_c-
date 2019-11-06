@@ -64,12 +64,14 @@ class Grafo {
     void imprimirVertices();
     void DFS(); // busca em profundidade
     void BFS(); // busca em largura
-    list<pair<int, int>> dijkstra();
+    map<int, int> dijkstra();
     void maze(int index1, int index2);
     void atualizarCorLista(Vertice& v, color cor);
-    void imprimirCaminho(int index1, int index2, list<pair<int, int>> caminhos);
+    void imprimirCaminho(int index1, int index2, map<int, int> caminhos);
     map<Vertice, list<Vertice>> map_lista_adj;
     map<Vertice, color> map_cor;
+    map<pair<Vertice, Vertice>, int> map_peso;
+    map<Vertice, int> map_distancia;
     int vertices{0};
     int arestas{0};
     int ultimo{0};
