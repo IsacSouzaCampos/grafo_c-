@@ -35,35 +35,6 @@ bool Grafo::inserirAresta(int v1, int v2, int peso) {
     return false;
 }
 
-bool Grafo::deletarVertice(int index) {
-    for(auto& v : lista_vertices){
-        if(v.getIndex() == index) {
-            for(auto& a : lista_arestas) {
-                if(a.first.first == v || a.first.second == v) {
-                    pair<Vertice, Vertice> p1(a.first.first, a.first.second);
-                    lista_arestas.remove(make_pair(p1, a.second));
-                }
-            }
-            lista_vertices.remove(v);
-            vertices--;
-            return true;;
-        }
-    }
-    return false;
-}
-
-bool Grafo::deletarAresta(int v1, int v2) {
-    for(auto& a : lista_arestas) {
-        if(a.first.first.getIndex() == v1 && a.first.second.getIndex() == v2) {
-            pair<Vertice, Vertice> p1(a.first.first, a.first.second);
-            lista_arestas.remove(make_pair(p1, a.second));
-            arestas--;
-            return true;
-        }
-    }
-    return false;
-}
-
 void Grafo::imprimirListaAdjacentes() {
     if(lista_vertices.empty())
         throw out_of_range("lista vazia!");
@@ -160,41 +131,18 @@ map<int, int> Grafo::dijkstra() {
     typedef pair<int, Vertice> p;
     priority_queue<p, vector<p>, greater<p>> dist;
     for(auto& v : lista_vertices) {
-        v.setColor(color::BRANCO);
         map_cor[v] = color::BRANCO;
-        v.setDistancia(INT_MAX/2);
         map_distancia[v] = INT_MAX/2;
         caminhos[v.getIndex()] = v.getIndex();
     }
 
     auto& temp = *(lista_vertices.begin());
-    temp.setDistancia(0);
     map_distancia[temp] = 0;
     auto current = *(lista_vertices.begin());
-    current.setColor(color::PRETO);
     map_cor[current] = color::PRETO;
-    current.setDistancia(0);
     map_distancia[current] = 0;
     dist.push(make_pair(0, current));
-
-    // while(!dist.empty()) {
-    //     dist.pop();
-    //     for(auto& a : lista_arestas) {
-    //         if(a.first.first == current) {
-    //             for(auto& v : lista_vertices) {
-    //                 if(v == a.first.second && v.getDistancia() > current.getDistancia() + a.second) {
-    //                     v.setDistancia(current.getDistancia() + a.second);
-    //                     dist.push(make_pair(v.getDistancia(), v));
-    //                     for(auto& c : caminhos) {
-    //                         if(c.first == v.getIndex())
-    //                             c.second = current.getIndex();
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     current = dist.top().second;
-    // }
+    
     while(!dist.empty()) {
         dist.pop();
         for(auto& la : map_lista_adj[current]) {
@@ -223,16 +171,6 @@ void Grafo::maze(int index1, int index2) {
     }
 
 
-}
-
-void Grafo::atualizarCorLista(Vertice& v, color cor) {
-    for(auto& a : lista_arestas) {
-        if(a.first.first == v) {
-            a.first.first.setColor(cor);
-        } else if(a.first.second == v) {
-            a.first.second.setColor(cor);
-        }
-    }
 }
 
 void Grafo::imprimirCaminho(int index1, int index2, map<int, int> caminhos) {
