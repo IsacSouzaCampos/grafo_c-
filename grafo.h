@@ -7,6 +7,7 @@
 #include <bits/stdc++.h> 
 #include <limits.h>
 #include <map>
+#include <string.h>
 
 enum color {
     BRANCO,
@@ -55,9 +56,10 @@ class Grafo {
     void imprimirListaAdjacentes();
     void imprimirVertices();
     void DFS(); // busca em profundidade
-    void BFS(); // busca em largura
+    bool BFS(Vertice v1, Vertice v2); // busca em largura
     map<int, int> dijkstra();
-    void maze(int index1, int index2);
+    string maze(int index1, int index2);
+    string path(Vertice v1, Vertice v2);
     void imprimirCaminho(int index1, int index2, map<int, int> caminhos);
     map<Vertice, list<Vertice>> map_lista_adj;
     map<Vertice, color> map_cor;

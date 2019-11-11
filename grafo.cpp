@@ -90,39 +90,47 @@ void Grafo::DFS() {
     }
 }
 
-void Grafo::BFS() {
+bool Grafo::BFS(Vertice v1,Vertice v2) {
     queue<Vertice> queue;
-    for(auto& mc : map_cor)
-        mc.second = color::BRANCO;
+    for(auto& mc : map_cor) {
+        if(mc.second == color::CINZA)
+            mc.second = color::BRANCO;
+    }
+    for(auto& md : map_distancia)
+        md.second = 0;
 
-    auto raiz = *(map_lista_adj.begin());
-    queue.push(raiz.first);
-
+    auto raiz = v1;
+    queue.push(raiz);
+    
+    map_cor[raiz] = color::CINZA;
     while(!queue.empty()) {
         auto current = queue.front();
-        // atualizarCorLista(current, color::PRETO);
-        map_cor[current] = color::PRETO;
 
-        bool branco = false;
-        for(auto& la : map_lista_adj[current]) {
-            if(map_cor[la] == color::BRANCO) {
-                branco = true;
-                break;
-            }
-        }
-        if(!branco)
-            map_cor[current] = color::PRETO;
-            // atualizarCorLista(current, color::PRETO);
+        // bool branco = false;
+        // for(auto& la : map_lista_adj[current]) {
+        //     if(map_cor[la] == color::BRANCO) {
+        //         branco = true;
+        //         break;
+        //     }
+        // }
+        // if(!branco)
+        //     map_cor[current] = color::PRETO;
         
         for(auto& la : map_lista_adj[current]) {
+            if(la == v2) {
+                map_distancia[la] = map_distancia[current] + 1;
+                return true;
+            }
             if(map_cor[la] == color::BRANCO) {
+                map_distancia[la] = map_distancia[current] + 1;
                 map_cor[la] = color::CINZA;
                 queue.push(la);
             }
         }
         queue.pop();
-        cout << current.getData() << endl;
+        // cout << current.getData() << endl;
     }
+    return false;
 }
 
 map<int, int> Grafo::dijkstra() {
@@ -160,8 +168,9 @@ map<int, int> Grafo::dijkstra() {
     return caminhos;
 }
 
-void Grafo::maze(int index1, int index2) {
+string Grafo::maze(int index1, int index2) {
     Vertice v1, v2;
+    int distancia;
     for(auto& v : lista_vertices) {
         if(v.getIndex() == index1) {
             v1 = v;
@@ -169,8 +178,36 @@ void Grafo::maze(int index1, int index2) {
             v2 = v;
         }
     }
+    if(BFS(v1, v2))
+        return path(v1, v2);
+    return "erro";
+}
 
-
+string Grafo::path(Vertice v1, Vertice v2) {
+    stack<int> stack;
+    auto current = v2;
+    stack.push(current.getIndex());
+    map_cor[current] = color::PRETO;
+    while(!(current == v1)) {
+        bool aux = false;
+        for(auto& la : map_lista_adj[current]) {
+            if((map_distancia[la] == map_distancia[current] - 1) && !aux) {
+                map_cor[la] = color::PRETO;
+                stack.push(la.getIndex());
+                current = la;
+                aux = true;
+            } else {
+                map_cor[la] = color::BRANCO;
+            }
+        }
+    }
+    string path = "" + to_string(stack.top());
+    stack.pop();
+    while(!stack.empty()) {
+        path += "->" + to_string(stack.top());
+        stack.pop();
+    }
+    return path;
 }
 
 void Grafo::imprimirCaminho(int index1, int index2, map<int, int> caminhos) {
