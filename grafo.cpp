@@ -191,13 +191,11 @@ string Grafo::path(Vertice v1, Vertice v2) {
     while(!(current == v1)) {
         bool aux = false;
         for(auto& la : map_lista_adj[current]) {
-            if((map_distancia[la] == map_distancia[current] - 1) && !aux) {
+            if((map_distancia[la] == map_distancia[current] - 1) && map_cor[la] != color::PRETO && !aux) {
                 map_cor[la] = color::PRETO;
                 stack.push(la.getIndex());
                 current = la;
                 aux = true;
-            } else {
-                map_cor[la] = color::BRANCO;
             }
         }
     }

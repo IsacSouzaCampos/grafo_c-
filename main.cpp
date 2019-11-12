@@ -45,8 +45,10 @@ int main(int argc, char* argv[]) {
     //     cout << endl;
     // }
 
-    cout << gr.maze(0, 55) << endl;
-    cout << gr.maze(0, 33) << endl;
+    cout << gr.maze(33, 58) << endl;
+    cout << gr.maze(26, 75) << endl;
+    cout << gr.maze(16, 69) << endl;
+    cout << gr.maze(38, 63) << endl;
 
     return 0;
 }
