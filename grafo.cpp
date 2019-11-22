@@ -16,7 +16,6 @@ void Grafo::inserirVertice(int data) {
     ultimo++;
 }
 
-
 bool Grafo::inserirAresta(int v1, int v2, int peso) {
     for(auto& vi : lista_vertices) {
         if(vi.getIndex() == v1) {
