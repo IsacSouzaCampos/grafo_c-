@@ -1,14 +1,19 @@
 #include <iostream>
 #include <time.h>
 #include "grafo.h"
+#include <iostream>
 
 using namespace std;
 
 int main(int argc, char* argv[]) {
     clock_t t_inicio, t_fim, t_decorrido;
+
+    ofstream myfile;
+    myfile.open ("result.csv");
+    
     
     // int linhas = 10, colunas = 10;
-    for(int ordem = 11; ordem < 52; ordem++) {
+    for(int ordem = 11; ordem < 201; ordem++) {
         Grafo gr = Grafo();
         int linhas = ordem, colunas = ordem;
         for(int i = 0; i < linhas*colunas; i++) {
@@ -48,7 +53,8 @@ int main(int argc, char* argv[]) {
 
         t_decorrido = ((t_fim - t_inicio) / (CLOCKS_PER_SEC / 1000));
         // t_decorrido = ((float) (t_fim - t_inicio) ) / CLOCKS_PER_SEC;
-        cout << "para ordem " << ordem << ", tempo = " << t_decorrido << endl;
+        // cout << "para ordem " << ordem << ", tempo = " << t_decorrido << endl;
+        myfile << ordem << ","<< t_decorrido << endl;
         ordem++;
     }
 
@@ -56,6 +62,7 @@ int main(int argc, char* argv[]) {
     // cout << gr.maze(26, 75) << endl;
     // cout << gr.maze(16, 69) << endl;
     // cout << gr.maze(38, 63) << endl;
+    myfile.close();
 
     return 0;
 }
