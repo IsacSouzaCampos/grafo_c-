@@ -14,20 +14,38 @@ void Grafo::inserirVertice(int data) {
     map_distancia[v] = 0;
     vertices++;
     ultimo++;
+    cout << data << endl;
 }
 
 bool Grafo::inserirAresta(int v1, int v2, int peso) {
-    for(auto& vi : lista_vertices) {
-        if(vi.getIndex() == v1) {
-            for(auto& vj : lista_vertices) {
-                if(vj.getIndex() == v2) {
-                    pair<Vertice, Vertice> p1(vi, vj);
-                    lista_arestas.push_back(make_pair(p1, peso));
-                    map_lista_adj[vi].push_back(vj);
-                    map_peso[make_pair(vi, vj)] = peso;
-                    arestas++;
-                    return true;
-                }
+    Vertice vi, vj;
+    int cont = 0;
+
+    for(auto& v : lista_vertices) {
+        int index = v.getIndex();
+        if(v1 == index) {
+            vi = v;
+            cont++;
+            if(cont == 2) {
+                pair<Vertice, Vertice> p1(vi, vj);
+                lista_arestas.push_back(make_pair(p1, peso));
+                map_lista_adj[vi].push_back(vj);
+                map_peso[make_pair(vi, vj)] = peso;
+                arestas++;
+                cout << "aresta(" << v1 << ", " << v2 << ")" << endl;
+                return true;
+            }
+        } else if(v2 == index) {
+            vj = v;
+            cont++;
+            if(cont == 2) {
+                pair<Vertice, Vertice> p1(vi, vj);
+                lista_arestas.push_back(make_pair(p1, peso));
+                map_lista_adj[vi].push_back(vj);
+                map_peso[make_pair(vi, vj)] = peso;
+                arestas++;
+                cout << "aresta(" << v1 << ", " << v2 << ")" << endl;
+                return true;
             }
         }
     }
@@ -227,5 +245,14 @@ void Grafo::imprimirCaminho(int index1, int index2, map<int, int> caminhos) {
     while(!stack.empty()) {
         cout << " -> " << stack.top();
         stack.pop();
+    }
+}
+
+void Grafo::atualizarOrdem(int ordem) {
+    for(int i = 0; i < ordem; i++) {
+        for(int j = 0; j < ordem; j++) {
+            int v = (i*ordem)+j;
+            map_cor[Vertice(v, v)] = color::BRANCO;
+        }
     }
 }

@@ -61,6 +61,7 @@ class Grafo {
     string maze(int index1, int index2);
     string path(Vertice v1, Vertice v2);
     void imprimirCaminho(int index1, int index2, map<int, int> caminhos);
+    void atualizarOrdem(int ordem);
     map<Vertice, list<Vertice>> map_lista_adj;
     map<Vertice, color> map_cor;
     map<pair<Vertice, Vertice>, int> map_peso;
