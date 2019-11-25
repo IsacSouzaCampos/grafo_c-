@@ -12,44 +12,21 @@ void Grafo::inserirVertice(int data) {
     map_lista_adj[v];
     map_cor[v] = color::BRANCO;
     map_distancia[v] = 0;
+    map_index[index] = v;
     vertices++;
     ultimo++;
     cout << data << endl;
 }
 
-bool Grafo::inserirAresta(int v1, int v2, int peso) {
-    Vertice vi, vj;
-    int cont = 0;
-
-    for(auto& v : lista_vertices) {
-        int index = v.getIndex();
-        if(v1 == index) {
-            vi = v;
-            cont++;
-            if(cont == 2) {
-                pair<Vertice, Vertice> p1(vi, vj);
-                lista_arestas.push_back(make_pair(p1, peso));
-                map_lista_adj[vi].push_back(vj);
-                map_peso[make_pair(vi, vj)] = peso;
-                arestas++;
-                cout << "aresta(" << v1 << ", " << v2 << ")" << endl;
-                return true;
-            }
-        } else if(v2 == index) {
-            vj = v;
-            cont++;
-            if(cont == 2) {
-                pair<Vertice, Vertice> p1(vi, vj);
-                lista_arestas.push_back(make_pair(p1, peso));
-                map_lista_adj[vi].push_back(vj);
-                map_peso[make_pair(vi, vj)] = peso;
-                arestas++;
-                cout << "aresta(" << v1 << ", " << v2 << ")" << endl;
-                return true;
-            }
-        }
-    }
-    return false;
+void Grafo::inserirAresta(int v1, int v2, int peso) {
+    Vertice vi = map_index[v1];
+    Vertice vj = map_index[v2];
+    
+    pair<Vertice, Vertice> p1(vi, vj);
+    map_lista_adj[vi].push_back(vj);
+    map_peso[make_pair(vi, vj)] = peso;
+    arestas++;
+    cout << "aresta(" << v1 << ", " << v2 << ")" << endl;
 }
 
 void Grafo::imprimirListaAdjacentes() {
@@ -151,7 +128,6 @@ bool Grafo::BFS(Vertice v1,Vertice v2) {
 }
 
 map<int, int> Grafo::dijkstra() {
-    // int qtd_fechados = lista_vertices.size();
     map<int, int> caminhos; // pair<atual, anterior>
     typedef pair<int, Vertice> p;
     priority_queue<p, vector<p>, greater<p>> dist;
@@ -186,15 +162,9 @@ map<int, int> Grafo::dijkstra() {
 }
 
 string Grafo::maze(int index1, int index2) {
-    Vertice v1, v2;
-    int distancia;
-    for(auto& v : lista_vertices) {
-        if(v.getIndex() == index1) {
-            v1 = v;
-        } else if(v.getIndex() == index2) {
-            v2 = v;
-        }
-    }
+    Vertice v1 = map_index[index1];
+    Vertice v2 = map_index[index2];
+    
     if(BFS(v1, v2))
         return path(v1, v2);
     return "erro";

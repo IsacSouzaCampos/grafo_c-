@@ -52,7 +52,7 @@ class Grafo {
     list<Vertice> lista_vertices;
     list<pair<pair<Vertice, Vertice>, int>> lista_arestas;
     void inserirVertice(int data);
-    bool inserirAresta(int v1, int v2, int peso);
+    void inserirAresta(int v1, int v2, int peso);
     void imprimirListaAdjacentes();
     void imprimirVertices();
     void DFS(); // busca em profundidade
@@ -66,6 +66,7 @@ class Grafo {
     map<Vertice, color> map_cor;
     map<pair<Vertice, Vertice>, int> map_peso;
     map<Vertice, int> map_distancia;
+    map<int, Vertice> map_index;
     int vertices{0};
     int arestas{0};
     int ultimo{0};
