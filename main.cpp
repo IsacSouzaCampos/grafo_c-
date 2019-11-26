@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
     
     // int linhas = 10, colunas = 10;
     Grafo gr = Grafo();
-    int ordem_plano = 301;
+    int ordem_plano = 201;
     int linhas = ordem_plano, colunas = ordem_plano;
 
     for(int i = 0; i < linhas*colunas; i++) {
@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
 
         t_decorrido = ((t_fim - t_inicio) / (CLOCKS_PER_SEC / 1000));
         // t_decorrido = ((float) (t_fim - t_inicio) ) / CLOCKS_PER_SEC;
-        myfile << ordem << ","<< t_decorrido << endl;
+        myfile << ordem*ordem << ","<< t_decorrido << endl;
         cout << "para ordem " << ordem << ", tempo = " << t_decorrido << endl;
         ordem++;
     }
