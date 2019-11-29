@@ -226,3 +226,27 @@ void Grafo::atualizarOrdem(int ordem) {
         }
     }
 }
+
+void Grafo::gerarGraphVizDot(int ordem) {
+    ofstream myfile;
+    myfile.open ("graphviz.dot");
+
+    myfile << "digraph G {" << endl;
+    for(auto& current : lista_vertices) {
+        for(auto& mla : map_lista_adj[current]) {
+            myfile << current.getIndex() << "->" << mla.getIndex() << "[arrowhead = \"none\"]" << endl;
+
+        }
+    }
+    for(int i = 0; i < ordem; i++) {
+        myfile << "{rank = same; ";
+        for(int j = 0; j < ordem; j++) {
+            int current = j+(i*ordem);
+            myfile << current << " ";
+        }
+        myfile << "}" << endl;
+    }
+    myfile << "}" << endl;
+
+    myfile.close();
+}
