@@ -29,19 +29,6 @@ void Grafo::inserirAresta(int v1, int v2, int peso) {
     cout << "aresta(" << v1 << ", " << v2 << ")" << endl;
 }
 
-void Grafo::imprimirListaAdjacentes() {
-    if(lista_vertices.empty())
-        throw out_of_range("lista vazia!");
-    for(auto& vi : lista_vertices) {
-        cout << "[v" << vi.getIndex() << "]: " << flush;
-        for(auto& a : lista_arestas) {
-            if(a.first.first == vi)
-                cout << "[v" << a.first.second.getIndex() << "] / " << flush;
-        }
-        cout << endl;
-    }
-}
-
 void Grafo::imprimirVertices() {
     for(auto& v : lista_vertices)
         cout << v.getData() << endl;
@@ -224,4 +211,33 @@ void Grafo::atualizarOrdem(int ordem) {
             map_cor[Vertice(v, v)] = color::BRANCO;
         }
     }
+}
+
+void Grafo::gerarGraphVizDot(int ordem) {
+    ofstream myfile;
+    myfile.open ("graphviz.dot");
+
+    myfile << "digraph G {" << endl;
+    for(auto& current : lista_vertices) {
+        for(auto& mla : map_lista_adj[current]) {
+            myfile << current.getIndex() << "->" << mla.getIndex() << "[arrowhead = \"none\"]" << endl;
+
+        }
+    }
+    for(int i = 0; i < ordem; i++) {
+        myfile << "{rank = same; ";
+        for(int j = 0; j < ordem; j++) {
+            int current = j+(i*ordem);
+            myfile << current << " ";
+        }
+        myfile << "}" << endl;
+    }
+    for(auto& mc : map_cor) {
+        if(mc.second == color::PRETO) {
+            myfile << mc.first.getIndex() << " [style=filled, fillcolor=grey]" << endl;
+        }
+    }
+    myfile << "}" << endl;
+
+    myfile.close();
 }

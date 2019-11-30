@@ -50,10 +50,8 @@ class Grafo {
 
     Grafo();
     list<Vertice> lista_vertices;
-    list<pair<pair<Vertice, Vertice>, int>> lista_arestas;
     void inserirVertice(int data);
     void inserirAresta(int v1, int v2, int peso);
-    void imprimirListaAdjacentes();
     void imprimirVertices();
     void DFS(); // busca em profundidade
     bool BFS(Vertice v1, Vertice v2); // busca em largura
@@ -62,6 +60,7 @@ class Grafo {
     string path(Vertice v1, Vertice v2);
     void imprimirCaminho(int index1, int index2, map<int, int> caminhos);
     void atualizarOrdem(int ordem);
+    void gerarGraphVizDot(int ordem);
     map<Vertice, list<Vertice>> map_lista_adj;
     map<Vertice, color> map_cor;
     map<pair<Vertice, Vertice>, int> map_peso;
