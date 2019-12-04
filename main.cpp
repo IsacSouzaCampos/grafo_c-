@@ -6,13 +6,10 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
     clock_t t_inicio, t_fim, t_decorrido;
-
-    ofstream myfile;
-    myfile.open ("result.csv");
     
     // int linhas = 10, colunas = 10;
     Grafo gr = Grafo();
-    int ordem_plano = 20;
+    int ordem_plano = 10;
     int linhas = ordem_plano, colunas = ordem_plano;
 
     for(int i = 0; i < linhas*colunas; i++) {
@@ -71,14 +68,27 @@ int main(int argc, char* argv[]) {
     //     ordem++;
     // }
 
-    cout << gr.maze(33, 58) << endl;
-    // cout << gr.maze(26, 75) << endl;
-    // cout << gr.maze(16, 69) << endl;
-    // cout << gr.maze(38, 63) << endl;
-    gr.gerarGraphVizDot(ordem_plano);
-    // gr.imprimirListaAdjacentes();
+    int opcao = -1;
+    while(opcao) {
+        cout << "\n[1]: inserir caminho\n[0]: sair\nopcao: " << flush;
+        cin >> opcao;
+        switch(opcao) {
+            case 1: int vi, vj;
+                    cout << "vertice inicial: " << flush;
+                    cin >> vi;
+                    cout << "vertice final: " << flush;
+                    cin >> vj;
+                    cout << gr.maze(vi, vj) << endl;
+                    break;
+            case 0: break;
+        }
+        if(opcao) {
+            gr.gerarGraphVizDot(ordem_plano);
+            system("xdot graphviz.dot");
+        }
+    }
 
-    myfile.close();
-
+    // cout << gr.maze(33, 58) << endl;
+    // gr.gerarGraphVizDot(ordem_plano);
     return 0;
 }
