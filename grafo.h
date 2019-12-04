@@ -56,11 +56,12 @@ class Grafo {
     void DFS(); // busca em profundidade
     bool BFS(Vertice v1, Vertice v2); // busca em largura
     map<int, int> dijkstra();
-    string maze(int index1, int index2);
+    string maze(int index1, int index2, int linhas, int colunas);
+    void limitarCaminho(int index1, int index2, int linhas, int colunas);
     string path(Vertice v1, Vertice v2);
     void imprimirCaminho(int index1, int index2, map<int, int> caminhos);
     void atualizarOrdem(int ordem);
-    void gerarGraphVizDot(int ordem);
+    void gerarGraphVizDot(int linhas, int colunas);
     map<Vertice, list<Vertice>> map_lista_adj;
     map<Vertice, color> map_cor;
     map<pair<Vertice, Vertice>, int> map_peso;

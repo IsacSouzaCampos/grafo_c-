@@ -86,16 +86,6 @@ bool Grafo::BFS(Vertice v1,Vertice v2) {
     map_cor[raiz] = color::CINZA;
     while(!queue.empty()) {
         auto current = queue.front();
-
-        // bool branco = false;
-        // for(auto& la : map_lista_adj[current]) {
-        //     if(map_cor[la] == color::BRANCO) {
-        //         branco = true;
-        //         break;
-        //     }
-        // }
-        // if(!branco)
-        //     map_cor[current] = color::PRETO;
         
         for(auto& la : map_lista_adj[current]) {
             if(la == v2) {
@@ -109,7 +99,6 @@ bool Grafo::BFS(Vertice v1,Vertice v2) {
             }
         }
         queue.pop();
-        // cout << current.getData() << endl;
     }
     return false;
 }
@@ -148,13 +137,18 @@ map<int, int> Grafo::dijkstra() {
     return caminhos;
 }
 
-string Grafo::maze(int index1, int index2) {
+string Grafo::maze(int index1, int index2, int linhas, int colunas) {
     Vertice v1 = map_index[index1];
     Vertice v2 = map_index[index2];
     
+    limitarCaminho(index1, index2, linhas, colunas);
     if(BFS(v1, v2))
         return path(v1, v2);
     return "erro";
+}
+
+void Grafo::limitarCaminho(int index1, int index2, int linhas, int colunas) {
+    
 }
 
 string Grafo::path(Vertice v1, Vertice v2) {
@@ -213,7 +207,7 @@ void Grafo::atualizarOrdem(int ordem) {
     }
 }
 
-void Grafo::gerarGraphVizDot(int ordem) {
+void Grafo::gerarGraphVizDot(int linhas, int colunas) {
     ofstream myfile;
     myfile.open ("graphviz.dot");
 
@@ -224,10 +218,10 @@ void Grafo::gerarGraphVizDot(int ordem) {
 
         }
     }
-    for(int i = 0; i < ordem; i++) {
+    for(int i = 0; i < linhas; i++) {
         myfile << "{rank = same; ";
-        for(int j = 0; j < ordem; j++) {
-            int current = j+(i*ordem);
+        for(int j = 0; j < colunas; j++) {
+            int current = j+(i*colunas);
             myfile << current << " ";
         }
         myfile << "}" << endl;
