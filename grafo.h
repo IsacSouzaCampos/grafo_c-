@@ -12,7 +12,8 @@
 enum color {
     BRANCO,
     CINZA,
-    PRETO
+    PRETO,
+    VERMELHO
 };
 
 using namespace std;
@@ -57,8 +58,8 @@ class Grafo {
     bool BFS(Vertice v1, Vertice v2); // busca em largura
     map<int, int> dijkstra();
     string maze(int index1, int index2, int linhas, int colunas);
-    void limitarCaminho(int index1, int index2, int linhas, int colunas);
-    string path(Vertice v1, Vertice v2);
+    void limitarBusca(int index1, int index2, int linhas, int colunas);
+    string caminho(Vertice v1, Vertice v2);
     void imprimirCaminho(int index1, int index2, map<int, int> caminhos);
     void atualizarOrdem(int ordem);
     void gerarGraphVizDot(int linhas, int colunas);

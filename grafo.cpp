@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 #include "grafo.h"
 
 
@@ -141,24 +142,122 @@ string Grafo::maze(int index1, int index2, int linhas, int colunas) {
     Vertice v1 = map_index[index1];
     Vertice v2 = map_index[index2];
     
-    limitarCaminho(index1, index2, linhas, colunas);
-    if(BFS(v1, v2))
-        return path(v1, v2);
+    limitarBusca(index1, index2, linhas, colunas);
+    if(BFS(v1, v2)) {
+        gerarGraphVizDot(linhas, colunas);
+        system("xdot graphviz.dot");
+        for(auto& mc : map_cor) {
+            if(mc.second == color::VERMELHO)
+                mc.second = color::BRANCO;
+        }
+        gerarGraphVizDot(linhas, colunas);
+        system("xdot graphviz.dot");
+        return caminho(v1, v2);
+    }
     return "erro";
 }
 
-void Grafo::limitarCaminho(int index1, int index2, int linhas, int colunas) {
+void Grafo::limitarBusca(int index1, int index2, int linhas, int colunas) {
+    int vertice_referencia = index1;
+    int dimensao = (linhas * colunas) - 1;
+    int temp = index1;
+    if(index2 > index1) {
+        if(index1 > (colunas - 1))
+            vertice_referencia -= colunas;
+        while(true) {
+            if((temp + colunas) > index2) {
+                if((temp + colunas) > dimensao)
+                    vertice_referencia--;
+                else {
+                    if(temp == index2 || (temp + colunas) == index2) { vertice_referencia++; break; }  // por enquanto
+                    int linha_atual = temp + 1, linha_inferior = temp + colunas;
+                    int resto_linha_atual, resto_linha_inferior;
+                    while(true) {
+                        if(linha_atual == index2) { vertice_referencia--; break; }
+                        if(linha_inferior == index2) { vertice_referencia++; break; }
+                        resto_linha_atual = (linha_atual+1)%colunas;
+                        resto_linha_inferior = linha_inferior%colunas;
+                        if( (linha_atual+1)%colunas ) linha_atual++;
+                        else { vertice_referencia++; break; }
+                        if ( linha_inferior%colunas ) linha_inferior--;
+                        else { vertice_referencia--; break; }
+                        // linha_atual++; linha_inferior--;
+                    }
+                }
+                // temp > index2 ? vertice_referencia++ : vertice_referencia--;
+                break;
+            }
+            temp += colunas;
+        }
+    } else {
+        if(index1 <= ((dimensao)-colunas))
+            vertice_referencia += colunas;
+        while(true) {
+            if((temp - colunas) < index2) {
+                if((temp - colunas) < 0)
+                    vertice_referencia++;
+                else {
+                    if(temp == index2 || (temp - colunas) == index2) { vertice_referencia++; break; }  // por enquanto
+                    int linha_atual = temp - 1, linha_superior = temp - colunas;
+                    while(true) {
+                        if(linha_atual == index2) { vertice_referencia++; break; }
+                        if(linha_superior == index2) { vertice_referencia--; break; }
+                        if( (linha_atual%colunas) ) linha_atual--;
+                        else { vertice_referencia--; break; }
+                        if( ((linha_superior+1)%colunas) ) linha_superior++;
+                        else { vertice_referencia++; break; }
+                        // linha_atual--; linha_superior++;
+                    }
+                }
+                // temp < index2 ? vertice_referencia-- : (vertice_referencia -= colunas)--;
+                break;
+            }
+            temp -= colunas;
+        }
+    }
+    if(map_cor[map_index[vertice_referencia]] != color::PRETO)
+        map_cor[map_index[vertice_referencia]] = color::VERMELHO;
+
+    temp = vertice_referencia;
+    while((temp -= colunas) > 0) {
+        if(map_cor[map_index[temp]] != color::PRETO)
+            map_cor[map_index[temp]] = color::VERMELHO;
+    }
+    temp = vertice_referencia;
+    while((temp += colunas) < dimensao) {
+        if(map_cor[map_index[temp]] != color::PRETO)
+            map_cor[map_index[temp]] = color::VERMELHO;
+    }
+
+    // traçar linha horizontal
+    cout << "vertice_referencia: " << vertice_referencia << endl;
+    cout << "vertice_referencia%colunas: " <<  vertice_referencia%colunas << endl;
     
+    if(index1 >= colunas && index1 <= (dimensao - colunas)){
+        // para a esquerda
+        for(int i = 1; i <= vertice_referencia%colunas; i++) {
+            if(map_cor[map_index[vertice_referencia - i]] != color::PRETO)
+                map_cor[map_index[vertice_referencia - i]] = color::VERMELHO;
+        }
+    
+        // para a direita
+        for(int i = 1; i < (colunas-(vertice_referencia%colunas)); i++) {
+            if(map_cor[map_index[vertice_referencia + i]] != color::PRETO)
+                map_cor[map_index[vertice_referencia + i]] = color::VERMELHO;
+        }
+    }
+    gerarGraphVizDot(linhas, colunas);
+    system("xdot graphviz.dot");
 }
 
-string Grafo::path(Vertice v1, Vertice v2) {
+string Grafo::caminho(Vertice v1, Vertice v2) {
     stack<int> stack;
     auto current = v2;
     stack.push(current.getIndex());
     map_cor[current] = color::PRETO;
     while(!(current == v1)) {
         for(auto& la : map_lista_adj[current]) {
-            if((map_distancia[la] == map_distancia[current] - 1) && map_cor[la] != color::PRETO) {
+            if((map_distancia[la] == map_distancia[current] - 1) && map_cor[la] == color::CINZA) {
                 map_cor[la] = color::PRETO;
                 stack.push(la.getIndex());
                 current = la;
@@ -228,6 +327,10 @@ void Grafo::gerarGraphVizDot(int linhas, int colunas) {
     }
     for(auto& mc : map_cor) {
         if(mc.second == color::PRETO) {
+            myfile << mc.first.getIndex() << " [style=filled, fillcolor=black]" << endl;
+        } else if(mc.second == color::VERMELHO) {
+            myfile << mc.first.getIndex() << " [style=filled, fillcolor=red]" << endl;
+        } else if(mc.second == color::CINZA) {
             myfile << mc.first.getIndex() << " [style=filled, fillcolor=grey]" << endl;
         }
     }

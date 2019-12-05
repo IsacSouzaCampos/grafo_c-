@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
     
     Grafo gr = Grafo();
     int ordem = 10;
-    int linhas = 13, colunas = 11;
+    int linhas = 5, colunas = 9;
 
     for(int i = 0; i < linhas*colunas; i++) {
         gr.inserirVertice(i);
