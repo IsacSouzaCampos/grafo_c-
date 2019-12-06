@@ -153,6 +153,16 @@ string Grafo::maze(int index1, int index2, int linhas, int colunas) {
         gerarGraphVizDot(linhas, colunas);
         system("xdot graphviz.dot");
         return caminho(v1, v2);
+    } else {
+        for(auto& mc : map_cor) {
+            if(mc.second == color::VERMELHO)
+                mc.second = color::BRANCO;
+        }
+        if(BFS(v1, v2)) {
+            gerarGraphVizDot(linhas, colunas);
+            system("xdot graphviz.dot");
+            return caminho(v1, v2);
+        }
     }
     return "erro";
 }

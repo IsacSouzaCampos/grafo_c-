@@ -8,12 +8,11 @@ int main(int argc, char* argv[]) {
     clock_t t_inicio, t_fim, t_decorrido;
     
     Grafo gr = Grafo();
-    int ordem = 10;
-    int linhas = 5, colunas = 9;
+    // int ordem = 10;
+    int linhas = 10, colunas = 10;
 
-    for(int i = 0; i < linhas*colunas; i++) {
+    for(int i = 0; i < linhas*colunas; i++)
         gr.inserirVertice(i);
-    }
 
     t_inicio = clock();
     
