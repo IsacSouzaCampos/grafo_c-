@@ -341,10 +341,10 @@ void Grafo::gerarGraphVizDot(int linhas, int colunas) {
             myfile << mc.first.getIndex() << " [style=filled, fillcolor=grey]" << endl;
         }
     }
-    int i = 0;
     for(auto& m_caminho : map_caminho) {
-        for(auto& lista_caminhos : m_caminho.second)
-            myfile << lista_caminhos << " [style=filled, fillcolor=" << map_cor_caminho[m_caminho.first%7] << "]" << endl;
+        int i = m_caminho.first%7;
+        for(auto& lista_caminhos : m_caminho.second) 
+            myfile << lista_caminhos << " [style=filled, fillcolor=" << map_cor_caminho[i] << "]" << endl;
     }
     myfile << "}" << endl;
 
