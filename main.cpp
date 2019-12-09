@@ -4,12 +4,8 @@
 
 using namespace std;
 
-int main(int argc, char* argv[]) {
+void gerarGrafo(int linhas, int colunas, Grafo& gr) {
     clock_t t_inicio, t_fim, t_decorrido;
-    
-    Grafo gr = Grafo();
-    // int ordem = 10;
-    int linhas = 10, colunas = 10;
 
     for(int i = 0; i < linhas*colunas; i++)
         gr.inserirVertice(i);
@@ -36,6 +32,14 @@ int main(int argc, char* argv[]) {
     t_fim = clock();
     t_decorrido = ((t_fim - t_inicio) / (CLOCKS_PER_SEC / 1000));
     cout << "tempo = " << t_decorrido << endl;
+}
+
+int main(int argc, char* argv[]) {
+    Grafo gr = Grafo();
+    gr.gerarMapaCorCaminho();
+    // int ordem = 10;
+    int linhas = 20, colunas = 20;
+    gerarGrafo(linhas, colunas, gr);
 
     int opcao = -1;
     while(opcao) {

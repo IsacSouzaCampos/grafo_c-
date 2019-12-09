@@ -63,13 +63,15 @@ class Grafo {
     void imprimirCaminho(int index1, int index2, map<int, int> caminhos);
     void atualizarOrdem(int ordem);
     void gerarGraphVizDot(int linhas, int colunas);
+    void gerarMapaCorCaminho();
     map<Vertice, list<Vertice>> map_lista_adj;
     map<Vertice, color> map_cor;
     map<pair<Vertice, Vertice>, int> map_peso;
     map<Vertice, int> map_distancia;
     map<int, Vertice> map_index;
-    int vertices{0};
-    int arestas{0};
+    map<int, string> map_cor_caminho;
+    map<int, list<int>> map_caminho;
+    int caminhos{0};
     int ultimo{0};
 };
 

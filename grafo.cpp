@@ -14,7 +14,6 @@ void Grafo::inserirVertice(int data) {
     map_cor[v] = color::BRANCO;
     map_distancia[v] = 0;
     map_index[index] = v;
-    vertices++;
     ultimo++;
     cout << data << endl;
 }
@@ -26,7 +25,6 @@ void Grafo::inserirAresta(int v1, int v2, int peso) {
     pair<Vertice, Vertice> p1(vi, vj);
     map_lista_adj[vi].push_back(vj);
     map_peso[make_pair(vi, vj)] = peso;
-    arestas++;
     cout << "aresta(" << v1 << ", " << v2 << ")" << endl;
 }
 
@@ -276,11 +274,14 @@ string Grafo::caminho(Vertice v1, Vertice v2) {
         }
     }
     string path = "" + to_string(stack.top());
+    map_caminho[caminhos].push_back(stack.top());
     stack.pop();
     while(!stack.empty()) {
         path += "->" + to_string(stack.top());
+        map_caminho[caminhos].push_back(stack.top());
         stack.pop();
     }
+    ++caminhos;
     return path;
 }
 
@@ -322,10 +323,8 @@ void Grafo::gerarGraphVizDot(int linhas, int colunas) {
 
     myfile << "digraph G {" << endl;
     for(auto& current : lista_vertices) {
-        for(auto& mla : map_lista_adj[current]) {
+        for(auto& mla : map_lista_adj[current])
             myfile << current.getIndex() << "->" << mla.getIndex() << "[arrowhead = \"none\"]" << endl;
-
-        }
     }
     for(int i = 0; i < linhas; i++) {
         myfile << "{rank = same; ";
@@ -336,15 +335,28 @@ void Grafo::gerarGraphVizDot(int linhas, int colunas) {
         myfile << "}" << endl;
     }
     for(auto& mc : map_cor) {
-        if(mc.second == color::PRETO) {
-            myfile << mc.first.getIndex() << " [style=filled, fillcolor=black]" << endl;
-        } else if(mc.second == color::VERMELHO) {
+        if(mc.second == color::VERMELHO) {
             myfile << mc.first.getIndex() << " [style=filled, fillcolor=red]" << endl;
         } else if(mc.second == color::CINZA) {
             myfile << mc.first.getIndex() << " [style=filled, fillcolor=grey]" << endl;
         }
     }
+    int i = 0;
+    for(auto& m_caminho : map_caminho) {
+        for(auto& lista_caminhos : m_caminho.second)
+            myfile << lista_caminhos << " [style=filled, fillcolor=" << map_cor_caminho[m_caminho.first%7] << "]" << endl;
+    }
     myfile << "}" << endl;
 
     myfile.close();
+}
+
+void Grafo::gerarMapaCorCaminho() {
+    map_cor_caminho[0] = "black";
+    map_cor_caminho[1] = "blue";
+    map_cor_caminho[2] = "sienna";
+    map_cor_caminho[3] = "purple";
+    map_cor_caminho[4] = "green";
+    map_cor_caminho[5] = "turquoise";
+    map_cor_caminho[6] = "yellow";
 }
