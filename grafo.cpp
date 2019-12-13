@@ -142,14 +142,14 @@ string Grafo::maze(int index1, int index2, int linhas, int colunas) {
     
     limitarBusca(index1, index2, linhas, colunas);
     if(BFS(v1, v2)) {
-        gerarGraphVizDot(linhas, colunas);
-        system("xdot graphviz.dot");
+        // gerarGraphVizDot(linhas, colunas);
+        // system("xdot graphviz.dot");
         for(auto& mc : map_cor) {
             if(mc.second == color::VERMELHO)
                 mc.second = color::BRANCO;
         }
-        gerarGraphVizDot(linhas, colunas);
-        system("xdot graphviz.dot");
+        // gerarGraphVizDot(linhas, colunas);
+        // system("xdot graphviz.dot");
         return caminho(v1, v2);
     } else {
         for(auto& mc : map_cor) {
@@ -157,8 +157,8 @@ string Grafo::maze(int index1, int index2, int linhas, int colunas) {
                 mc.second = color::BRANCO;
         }
         if(BFS(v1, v2)) {
-            gerarGraphVizDot(linhas, colunas);
-            system("xdot graphviz.dot");
+            // gerarGraphVizDot(linhas, colunas);
+            // system("xdot graphviz.dot");
             return caminho(v1, v2);
         }
     }
@@ -254,8 +254,8 @@ void Grafo::limitarBusca(int index1, int index2, int linhas, int colunas) {
                 map_cor[map_index[vertice_referencia + i]] = color::VERMELHO;
         }
     }
-    gerarGraphVizDot(linhas, colunas);
-    system("xdot graphviz.dot");
+    // gerarGraphVizDot(linhas, colunas);
+    // system("xdot graphviz.dot");
 }
 
 string Grafo::caminho(Vertice v1, Vertice v2) {
@@ -284,6 +284,42 @@ string Grafo::caminho(Vertice v1, Vertice v2) {
     ++caminhos;
     return path;
 }
+
+// string Grafo::caminho(Vertice v1, Vertice v2) {
+//     stack<int> stack;
+//     auto current = v2;
+//     auto vertice = current;
+//     stack.push(current.getIndex());
+//     map_cor[current] = color::PRETO;
+//     int peso = 0;
+
+//     while(!(current == v1)) {
+//         peso = map_peso[make_pair(current, map_lista_adj[current].front())];
+//         for(auto& la : map_lista_adj[current]) {
+//             auto caminho_menor = (map_distancia[la] == map_distancia[current] - 1);
+//             auto cinza = map_cor[la] == color::CINZA;
+//             auto melhor_caminho = map_peso[make_pair(current, la)] <= peso;
+            
+//             auto prox_vertice = caminho_menor && cinza && melhor_caminho;
+            
+//             if(prox_vertice)
+//                 auto vertice = la;
+//         }
+//         map_cor[vertice] = color::PRETO;
+//         stack.push(vertice.getIndex());
+//         current = vertice;
+//     }
+//     string path = "" + to_string(stack.top());
+//     map_caminho[caminhos].push_back(stack.top());
+//     stack.pop();
+//     while(!stack.empty()) {
+//         path += "->" + to_string(stack.top());
+//         map_caminho[caminhos].push_back(stack.top());
+//         stack.pop();
+//     }
+//     ++caminhos;
+//     return path;
+// }
 
 void Grafo::imprimirCaminho(int index1, int index2, map<int, int> caminhos) {
     stack<int> stack;

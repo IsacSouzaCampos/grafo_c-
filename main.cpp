@@ -38,8 +38,38 @@ int main(int argc, char* argv[]) {
     Grafo gr = Grafo();
     gr.gerarMapaCorCaminho();
     // int ordem = 10;
-    int linhas = 20, colunas = 20;
+    int linhas = 12, colunas = 12;
     gerarGrafo(linhas, colunas, gr);
+
+
+    for(int i = floor(linhas/8); i < floor((linhas*7)/8); i++) {
+        int linha = i*colunas;
+        for(int j = floor(colunas/8); j < floor((colunas*7)/8); j++) {
+            int v = linha+j;
+            gr.map_peso[make_pair(gr.map_index[v], gr.map_index[v+1])] = 2;
+            // gr.map_cor[gr.map_index[v]] = color::VERMELHO;
+            // gr.map_cor[gr.map_index[v+1]] = color::VERMELHO;
+        }
+    }
+    for(int i = floor(linhas/4); i < floor((linhas*3)/4)-1; i++) {
+        int linha = i*colunas;
+        for(int j = floor(colunas/4); j < floor((colunas*3)/4)-1; j++) {
+            int v = linha+j;
+            gr.map_peso[make_pair(gr.map_index[v], gr.map_index[v+1])] = 3;
+            // gr.map_cor[gr.map_index[v]] = color::CINZA;
+            // gr.map_cor[gr.map_index[v+1]] = color::CINZA;
+        }
+    }
+    for(int i = floor(linhas/3); i < floor((linhas*2)/3)-1; i++) {
+        int linha = i*colunas;
+        for(int j = floor(colunas/3); j < floor((colunas*2)/3)-1; j++) {
+            int v = linha+j;
+            gr.map_peso[make_pair(gr.map_index[v], gr.map_index[v+1])] = 4;
+            // gr.map_cor[gr.map_index[v]] = color::VERMELHO;
+            // gr.map_cor[gr.map_index[v+1]] = color::VERMELHO;
+        }
+    }
+    gr.gerarGraphVizDot(linhas, colunas);
 
     int opcao = -1;
     while(opcao) {
