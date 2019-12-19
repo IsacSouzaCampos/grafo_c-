@@ -64,6 +64,7 @@ class Grafo {
     void atualizarOrdem(int ordem);
     void gerarGraphVizDot(int linhas, int colunas);
     void gerarMapaCorCaminho();
+    void gerarPesos(int linhas, int colunas);
     map<Vertice, list<Vertice>> map_lista_adj;
     map<Vertice, color> map_cor;
     map<pair<Vertice, Vertice>, int> map_peso;

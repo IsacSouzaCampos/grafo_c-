@@ -15,17 +15,15 @@ void Grafo::inserirVertice(int data) {
     map_distancia[v] = 0;
     map_index[index] = v;
     ultimo++;
-    cout << data << endl;
+    // cout << data << endl;
 }
 
 void Grafo::inserirAresta(int v1, int v2, int peso) {
     Vertice vi = map_index[v1];
     Vertice vj = map_index[v2];
     
-    pair<Vertice, Vertice> p1(vi, vj);
     map_lista_adj[vi].push_back(vj);
     map_peso[make_pair(vi, vj)] = peso;
-    cout << "aresta(" << v1 << ", " << v2 << ")" << endl;
 }
 
 void Grafo::imprimirVertices() {
@@ -77,9 +75,10 @@ bool Grafo::BFS(Vertice v1,Vertice v2) {
             mc.second = color::BRANCO;
     }
     for(auto& md : map_distancia)
-        md.second = 0;
+        md.second = -1;
 
     auto raiz = v1;
+    map_distancia[v1] = 0;
     queue.push(raiz);
     
     map_cor[raiz] = color::CINZA;
@@ -88,11 +87,13 @@ bool Grafo::BFS(Vertice v1,Vertice v2) {
         
         for(auto& la : map_lista_adj[current]) {
             if(la == v2) {
-                map_distancia[la] = map_distancia[current] + 1;
+                map_distancia[la] = map_distancia[current] + map_peso[make_pair(current, la)];
                 return true;
             }
             if(map_cor[la] == color::BRANCO) {
-                map_distancia[la] = map_distancia[current] + 1;
+                auto index1 = current.getIndex();
+                int index2 = la.getIndex();
+                map_distancia[la] = map_distancia[current] + map_peso[make_pair(current, la)];
                 map_cor[la] = color::CINZA;
                 queue.push(la);
             }
@@ -264,14 +265,18 @@ string Grafo::caminho(Vertice v1, Vertice v2) {
     stack.push(current.getIndex());
     map_cor[current] = color::PRETO;
     while(!(current == v1)) {
+        auto prox = map_lista_adj[current].front();
         for(auto& la : map_lista_adj[current]) {
-            if((map_distancia[la] == map_distancia[current] - 1) && map_cor[la] == color::CINZA) {
-                map_cor[la] = color::PRETO;
-                stack.push(la.getIndex());
-                current = la;
-                break;
+            if(map_distancia[prox] < 0)
+                prox = la;
+            if((map_distancia[la] < map_distancia[prox]) && map_distancia[la] > -1
+                && map_cor[la] == color::CINZA) {
+                    prox = la;
             }
         }
+        map_cor[prox] = color::PRETO;
+        stack.push(prox.getIndex());
+        current = prox;
     }
     string path = "" + to_string(stack.top());
     map_caminho[caminhos].push_back(stack.top());
@@ -284,42 +289,6 @@ string Grafo::caminho(Vertice v1, Vertice v2) {
     ++caminhos;
     return path;
 }
-
-// string Grafo::caminho(Vertice v1, Vertice v2) {
-//     stack<int> stack;
-//     auto current = v2;
-//     auto vertice = current;
-//     stack.push(current.getIndex());
-//     map_cor[current] = color::PRETO;
-//     int peso = 0;
-
-//     while(!(current == v1)) {
-//         peso = map_peso[make_pair(current, map_lista_adj[current].front())];
-//         for(auto& la : map_lista_adj[current]) {
-//             auto caminho_menor = (map_distancia[la] == map_distancia[current] - 1);
-//             auto cinza = map_cor[la] == color::CINZA;
-//             auto melhor_caminho = map_peso[make_pair(current, la)] <= peso;
-            
-//             auto prox_vertice = caminho_menor && cinza && melhor_caminho;
-            
-//             if(prox_vertice)
-//                 auto vertice = la;
-//         }
-//         map_cor[vertice] = color::PRETO;
-//         stack.push(vertice.getIndex());
-//         current = vertice;
-//     }
-//     string path = "" + to_string(stack.top());
-//     map_caminho[caminhos].push_back(stack.top());
-//     stack.pop();
-//     while(!stack.empty()) {
-//         path += "->" + to_string(stack.top());
-//         map_caminho[caminhos].push_back(stack.top());
-//         stack.pop();
-//     }
-//     ++caminhos;
-//     return path;
-// }
 
 void Grafo::imprimirCaminho(int index1, int index2, map<int, int> caminhos) {
     stack<int> stack;
@@ -395,4 +364,43 @@ void Grafo::gerarMapaCorCaminho() {
     map_cor_caminho[4] = "green";
     map_cor_caminho[5] = "turquoise";
     map_cor_caminho[6] = "yellow";
+}
+
+void Grafo::gerarPesos(int linhas, int colunas) {
+    for(int i = floor(linhas/8); i < floor((linhas*7)/8); i++) {
+        int linha = i*colunas;
+        for(int j = floor(colunas/8); j < floor((colunas*7)/8); j++) {
+            int v = linha+j;
+            map_peso[make_pair(map_index[v], map_index[v+1])] = 2;
+            map_peso[make_pair(map_index[v+1], map_index[v])] = 2;
+            if(i < floor((linhas*7)/8 - 1)) {
+                map_peso[make_pair(map_index[v], map_index[v+colunas])] = 2;
+                map_peso[make_pair(map_index[v+colunas], map_index[v])] = 2;
+            }
+        }
+    }
+    for(int i = floor(linhas/4); i < floor((linhas*3)/4)-1; i++) {
+        int linha = i*colunas;
+        for(int j = floor(colunas/4); j < floor((colunas*3)/4)-1; j++) {
+            int v = linha+j;
+            map_peso[make_pair(map_index[v], map_index[v+1])] = 3;
+            map_peso[make_pair(map_index[v+1], map_index[v])] = 3;
+            if(i < floor((linhas*7)/8 - 1)) {
+                map_peso[make_pair(map_index[v], map_index[v+colunas])] = 3;
+                map_peso[make_pair(map_index[v+colunas], map_index[v])] = 3;
+            }
+        }
+    }
+    for(int i = floor(linhas/3); i < floor((linhas*2)/3)-1; i++) {
+        int linha = i*colunas;
+        for(int j = floor(colunas/3); j < floor((colunas*2)/3)-1; j++) {
+            int v = linha+j;
+            map_peso[make_pair(map_index[v], map_index[v+1])] = 4;
+            map_peso[make_pair(map_index[v+1], map_index[v])] = 4;
+            if(i < floor((linhas*7)/8 - 1)) {
+                map_peso[make_pair(map_index[v], map_index[v+colunas])] = 4;
+                map_peso[make_pair(map_index[v+colunas], map_index[v])] = 4;
+            }
+        }
+    }
 }
